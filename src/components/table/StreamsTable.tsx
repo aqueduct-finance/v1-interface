@@ -10,7 +10,7 @@ import TextField from "./TextField";
 import PoolField from "./PoolField";
 import { ExplicitAny } from "../../types/ExplicitAny";
 
-const StreamsTable = () => {
+function StreamsTable() {
     const provider = useEthersProvider();
     const { chain } = useNetwork();
     const { address } = useAccount();
@@ -121,6 +121,6 @@ const StreamsTable = () => {
             </div>
         </section>
     );
-};
+}
 
 export default StreamsTable;
