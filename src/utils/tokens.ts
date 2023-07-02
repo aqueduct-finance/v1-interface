@@ -1,6 +1,6 @@
 import { TokenTypes } from "../types/TokenOption";
 
-export const tokens: TokenTypes[] = [
+const tokens: TokenTypes[] = [
     {
         name: "USD Coin",
         address: "0x3a36cD6D55e260E0a3448cd8905c51517bb7EbA8",
@@ -13,9 +13,9 @@ export const tokens: TokenTypes[] = [
             symbol: "USDC",
             decimals: 18,
             chainId: 5,
-            logoURI: "/usdc-logo.png"
+            logoURI: "/usdc-logo.png",
         },
-        logoURI: "/usdc-logo.png"
+        logoURI: "/usdc-logo.png",
     },
     {
         name: "DAI Stablecoin",
@@ -29,8 +29,10 @@ export const tokens: TokenTypes[] = [
             symbol: "DAI",
             decimals: 18,
             chainId: 5,
-            logoURI: "/dai-logo.png"
+            logoURI: "/dai-logo.png",
         },
-        logoURI: "/dai-logo.png"
-    }
+        logoURI: "/dai-logo.png",
+    },
 ];
+
+export default tokens;

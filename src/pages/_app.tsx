@@ -1,12 +1,12 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
 import { goerli } from "wagmi/chains";
-import NavBar from '../components/NavBar';
+import NavBar from "../components/NavBar";
 
-const chains = [goerli]
+const chains = [goerli];
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -46,4 +46,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
-export default MyApp
+export default MyApp;

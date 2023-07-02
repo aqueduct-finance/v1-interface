@@ -20,7 +20,7 @@ module.exports = {
                 ethBlue: "#00ABEE",
                 ethPink: "#E7018A",
                 item: "#121212",
-                accentText: "rgb(255 255 255 / 0.5)"
+                accentText: "rgb(255 255 255 / 0.5)",
             },
             screens: {
                 xs: "475px",
@@ -31,4 +31,3 @@ module.exports = {
     },
     plugins: [],
 };
-
