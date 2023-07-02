@@ -15,99 +15,119 @@
 }
 
 @layer components {
-    .centered-shadow {
-        box-shadow: 0px 0px 15px rgba(225, 225, 225);
-    }
+  .centered-shadow {
+    box-shadow: 0px 0px 15px rgba(225, 225, 225);
+  }
 
-    .centered-shadow-dark {
-        box-shadow: 0px 0px 500px #0b1521;
-    }
+  .centered-shadow-dark {
+    box-shadow: 0px 0px 500px #0b1521;
+  }
 
-    .centered-shadow-sm {
-        box-shadow: 0px 0px 8px rgba(225, 225, 225);
-    }
+  .centered-shadow-sm {
+    box-shadow: 0px 0px 8px rgba(225, 225, 225);
+  }
 
-    .centered-shadow-sm-none {
-        box-shadow: 0px 0px 0px rgba(225, 225, 225);
-    }
+  .centered-shadow-sm-none {
+    box-shadow: 0px 0px 0px rgba(225, 225, 225);
+  }
 
-    .centered-shadow-sm-dark {
-        box-shadow: 0px 0px 12px rgba(225, 225, 225, 0.1);
-    }
+  .centered-shadow-sm-dark {
+    box-shadow: 0px 0px 12px rgba(225, 225, 225, 0.1);
+  }
 
-    .centered-shadow-md-dark {
-        box-shadow: 0px 0px 12px rgba(225, 225, 225, 0.2);
-    }
+  .centered-shadow-md-dark {
+    box-shadow: 0px 0px 12px rgba(225, 225, 225, 0.2);
+  }
 
-    .centered-shadow-lg {
-        box-shadow: 0px 0px 35px rgba(215, 215, 215);
-    }
+  .centered-shadow-lg {
+    box-shadow: 0px 0px 35px rgba(215, 215, 215);
+  }
 
-    .poppins-font {
-        font-family: "Poppins", sans-serif;
-    }
+  .poppins-font {
+    font-family: "Poppins", sans-serif;
+  }
 
-    .monospace-font {
-        font-family: "Red Hat Mono", monospace;
-    }
+  .monospace-font {
+    font-family: "Red Hat Mono", monospace;
+  }
 
-    .blob {
-        background-image: url("/background.gif");
-    }
+  .blob {
+    background-image: url("/background.gif");
+  }
 
-    .bg-50 {
-        background-size: 50%;
-    }
+  .bg-50 {
+    background-size: 50%;
+  }
 
-    .glow-pink-xs {
-        filter: drop-shadow(0px 0px 5px #e7018aaa)
-            drop-shadow(0px 0px 50px #e7018a);
-    }
+  .glow-pink-xs {
+    filter: drop-shadow(0px 0px 5px #e7018aaa) drop-shadow(0px 0px 50px #e7018a);
+  }
 
-    .glow-yellow-xs {
-        filter: drop-shadow(0px 0px 5px #f5ac37aa)
-            drop-shadow(0px 0px 50px #f5ac37);
-    }
+  .glow-yellow-xs {
+    filter: drop-shadow(0px 0px 5px #f5ac37aa) drop-shadow(0px 0px 50px #f5ac37);
+  }
 
-    .glow-blue-xs {
-        filter: drop-shadow(0px 0px 5px #0460ce88)
-            drop-shadow(0px 0px 50px #0460cedd);
-    }
+  .glow-blue-xs {
+    filter: drop-shadow(0px 0px 5px #0460ce88) drop-shadow(0px 0px 50px #0460cedd);
+  }
 
-    .textbox-outline {
-        box-shadow: 0 0 0 1px #0460ce;
-    }
+  .textbox-outline {
+    box-shadow: 0 0 0 1px #0460ce;
+  }
 
-    .rotate-y-md {
-        transform: rotateY(25deg);
-    }
+  .rotate-y-md {
+    transform: rotateY(25deg);
+  }
 
-    .-rotate-y-md {
-        transform: rotateY(-25deg);
-    }
+  .-rotate-y-md {
+    transform: rotateY(-25deg);
+  }
 
-    .rotate-y-sm {
-        transform: rotateY(12deg);
-    }
+  .rotate-y-sm {
+    transform: rotateY(12deg);
+  }
 
-    .-rotate-y-sm {
-        transform: rotateY(-12deg);
-    }
+  .-rotate-y-sm {
+    transform: rotateY(-12deg);
+  }
 
-    .dark-border-color {
-        border-left: 2px solid black;
-        border-right: 2px solid rgb(113 113 122);
-        border-top: 2px solid black;
-        border-bottom: 2px solid black;
-    }
+  .dark-border-color {
+    border-left: 2px solid black;
+    border-right: 2px solid rgb(113 113 122);
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+  }
 
-    .animate-spin-slow {
-        animation: spin 5s linear infinite;
-    }
+  .animate-spin-slow {
+    animation: spin 5s linear infinite;
+  }
 
-    .animate-border {
-        animation: clippath 3s infinite -1.5s linear;
-    }
+  .animate-border {
+    animation: clippath 3s infinite -1.5s linear;
+  }
+
+  .scrollable-container {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    /* Width of the scrollbar */
+    scrollbar-color: #888888 #000000;
+    /* Color of the scrollbar thumb and track */
+  }
+
+  .scrollable-container::-webkit-scrollbar {
+    width: 8px;
+    /* Width of the scrollbar */
+  }
+
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888888;
+    /* Color of the scrollbar thumb */
+  }
+
+  .scrollable-container::-webkit-scrollbar-track {
+    background-color: #000000;
+    /* Color of the scrollbar track */
+  }
 }
 
 @keyframes clippath {

@@ -22,13 +22,23 @@ function GenericTable({
     data,
     isLoading,
     noDataMessage,
-}: GenericTableProps) {
-    return (
-        <WidgetContainer title={title} isUnbounded>
-            <div className="flex px-4 text-xl text-white">
-                {labels.map((label, i) => (
-                    <div className={columnProps[i]} key={label}>
-                        {label}
+}: GenericTableProps) => (
+    <WidgetContainer title={title} isUnbounded>
+        <div className="flex px-4 text-xl text-white">
+            {labels.map((label, i) => (
+                <div className={columnProps[i]} key={label}>
+                    {label}
+                </div>
+            ))}
+        </div>
+        {isLoading && (
+            <div className="flex flex-col space-y-2">
+                {[0, 1, 2].map((i) => (
+                    <div
+                        className="w-full p-4 text-transparent bg-item dark:bg-aqueductBlue/30 rounded-2xl animate-pulse"
+                        key={`loading-${i}`}
+                    >
+                        -
                     </div>
                 ))}
             </div>
