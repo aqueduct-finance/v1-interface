@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
+import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
 import { goerli } from "wagmi/chains";
 import NavBar from '../components/NavBar';
 
@@ -21,19 +22,26 @@ function MyApp({ Component, pageProps }: AppProps) {
     }),
   );
 
+  const client = new ApolloClient({
+    uri: 'https://api.studio.thegraph.com/query/49133/aqueduct/version/latest',
+    cache: new InMemoryCache(),
+  });
+
 
   return (
     <div className='flex flex-col min-h-screen bg-black text-white overflow-x-hidden'>
-      <WagmiConfig config={config}>
-        <ConnectKitProvider>
-          <div>
-            <NavBar />
-          </div>
-          <div className='flex flex-grow items-center justify-center'>
-            <Component {...pageProps} />
-          </div>
-        </ConnectKitProvider>
-      </WagmiConfig>
+      <ApolloProvider client={client}>
+        <WagmiConfig config={config}>
+          <ConnectKitProvider>
+            <div>
+              <NavBar />
+            </div>
+            <div className='flex flex-grow items-center justify-center'>
+              <Component {...pageProps} />
+            </div>
+          </ConnectKitProvider>
+        </WagmiConfig>
+      </ApolloProvider>
     </div>
   )
 }

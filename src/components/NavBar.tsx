@@ -44,7 +44,7 @@ function NavBar() {
             <div className="flex w-full items-center space-x-2 lg:space-x-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                    src="aqueduct-logo.png"
+                    src="/aqueduct-logo.png"
                     alt="Aqueduct logo"
                     className="w-10 h-10 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl"
                 />
@@ -70,11 +70,7 @@ function NavBar() {
                 className={`${isOpen ? "flex flex-col space-y-4 pt-4" : "hidden"
                     } md:flex md:flex-row md:space-y-0 md:pt-0 md:space-x-3`}
             >
-                <div
-                    className="flex items-center bg-aqueductBlue font-semibold text-aqueBg rounded-xl"
-                >
-                    <WalletConnectButton />
-                </div>
+                <WalletConnectButton />
             </div>
         </motion.div>
     );

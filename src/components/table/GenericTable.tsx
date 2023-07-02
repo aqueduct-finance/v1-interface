@@ -36,7 +36,7 @@ const GenericTable = ({
             <div className="flex flex-col space-y-2">
                 {[0, 1, 2].map((i) => (
                     <div
-                        className="w-full p-4 text-transparent bg-gray-200 dark:bg-gray-800 rounded-2xl animate-pulse"
+                        className="w-full p-4 text-transparent bg-item dark:bg-aqueductBlue/30 rounded-2xl animate-pulse"
                         key={`loading-${i}`}
                     >
                         -

@@ -105,6 +105,29 @@
   .animate-border {
     animation: clippath 3s infinite -1.5s linear;
   }
+
+  .scrollable-container {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    /* Width of the scrollbar */
+    scrollbar-color: #888888 #000000;
+    /* Color of the scrollbar thumb and track */
+  }
+
+  .scrollable-container::-webkit-scrollbar {
+    width: 8px;
+    /* Width of the scrollbar */
+  }
+
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888888;
+    /* Color of the scrollbar thumb */
+  }
+
+  .scrollable-container::-webkit-scrollbar-track {
+    background-color: #000000;
+    /* Color of the scrollbar track */
+  }
 }
 
 @keyframes clippath {
