@@ -553,6 +553,32 @@ const PoolInteractionVisualization: NextPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const data = {
+            syncs: []
+        };
+        
+        const initialSync = {
+            blockTimestamp: Math.floor(Date.now() / 1000),
+            reserve0: "1000",
+            reserve1: "1000"
+        };
+        
+        data.syncs.push(initialSync);
+        
+        for (let i = 0; i < 1000; i++) {
+            const lastSync = data.syncs[data.syncs.length - 1];
+            const multiplier = Math.random() * (1.1 - 0.9) + 0.9;
+            const newReserve0 = parseInt(lastSync.reserve0) * multiplier;
+            const newReserve1 = parseInt(lastSync.reserve0) * parseInt(lastSync.reserve1) / newReserve0;
+            const newSync = {
+                blockTimestamp: lastSync.blockTimestamp + 10,
+                reserve0: Math.floor(newReserve0).toString(),
+                reserve1: Math.floor(newReserve1).toString()
+            };
+            data.syncs.push(newSync);
+        }
+        console.log(data)
+
         if (data !== undefined) {
             if (!startDate) {
                 return;

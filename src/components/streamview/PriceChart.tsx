@@ -82,7 +82,7 @@ const PriceChart = ({
                 </ReferenceLine>
                 <XAxis dataKey="blockTimestamp.getTime()" axisLine={false} tickLine={false} tick={false} />
                 <YAxis domain={[minPrice - minExtra, maxPrice + maxExtra]} axisLine={false} tickLine={false} tick={false} />
-                <Tooltip content={<CustomTooltip payload={undefined} token1={token1} />} />
+                {/*<Tooltip content={<CustomTooltip payload={undefined} token1={token1} />} />*/}
             </LineChart>
         </div>
     )

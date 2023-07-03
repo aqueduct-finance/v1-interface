@@ -32,8 +32,8 @@ const DetailsDisplay = ({
     ]
 
     return (
-        <div className='w-full h-full rounded-xl bg-item text-white flex flex-col items-start justify-start px-6 py-4'>
-            <h1 className='font-semibold text-lg text-accentText'>
+        <div className='w-full h-full rounded-l-[1.4rem] rounded-r-xl bg-item text-white flex flex-col items-start justify-start px-6 py-4'>
+            <h1 className='font-medium text-accentText'>
                 Details
             </h1>
             <div className='space-y-3 mt-4'>

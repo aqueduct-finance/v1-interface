@@ -42,11 +42,11 @@ const WidgetContainer = ({
     cancelStream
 }: WidgetContainerProps) => (
     <div
-        className={`flex flex-col w-full md:p-6 space-y-6 rounded-3xl md:bg-black dark:md:border-gray-800/60 dark:md:bg-gray-900/60 border-[2px] border-[#262626] transition ${!isUnbounded && "  max-w-xl "
+        className={`poppins-font flex flex-col w-full md:p-2 space-y-6 rounded-[2rem] md:bg-black dark:md:border-gray-800/60 dark:md:bg-gray-900/60 border-[2px] border-[#262626] transition ${!isUnbounded && "  max-w-xl "
             }`}
     >
         {(title || smallTitle || buttons) && (
-            <div className="flex font-bold space-x-4 text-2xl whitespace-nowrap">
+            <div className="flex font-bold space-x-4 text-2xl whitespace-nowrap p-4">
                 {title && (
                     <div className="px-2 py-2 rounded-xl  w-min text-white">
                         {title}
@@ -67,11 +67,11 @@ const WidgetContainer = ({
                         </button>
                     ))}
                 {!title && !buttons && (
-                    <div className="px-4 py-2 rounded-xl text-2xl w-min text-white">
+                    <div className="pl-1 pr-4 flex items-center rounded-xl text-lg font-semibold w-min text-white">
                         {smallTitle}
                     </div>
                 )}
-                <div className="flex w-full max-w-4xl space-x-2 py-2 items-center justify-center">
+                <div className="flex w-full max-w-4xl space-x-2 items-center justify-center">
                     <div className="flex grow" />
                     {userAddress && address && userAddress === address && setOutboundAndInboundTokens && (
                         <ButtonWithInfoPopup

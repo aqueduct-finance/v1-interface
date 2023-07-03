@@ -33,7 +33,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ApolloProvider client={client}>
         <WagmiConfig config={config}>
           <ConnectKitProvider>
-            <div>
+            <div className='w-full flex items-center justify-center'>
               <NavBar />
             </div>
             <div className='flex flex-grow items-center justify-center'>

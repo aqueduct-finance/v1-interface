@@ -44,12 +44,12 @@ function NavBar() {
             <div className="flex w-full items-center space-x-2 lg:space-x-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                    src="/aqueduct-logo.png"
+                    src="/aq-logo.png"
                     alt="Aqueduct logo"
                     className="w-10 h-10 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl"
                 />
                 <h1
-                    className="text-2xl lg:text-3xl font-semibold pr-2 lg:pr-3 poppins-font"
+                    className="text-2xl font-semibold pr-2 lg:pr-3 poppins-font"
                 >
                     aqueduct
                 </h1>

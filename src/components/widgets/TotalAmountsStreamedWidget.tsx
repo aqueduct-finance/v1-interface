@@ -47,7 +47,7 @@ const TotalAmountsStreamedWidget = ({
     };
 
     return (
-        <div className="md:space-y-6 lg:space-y-10 pb-2">
+        <div className="md:space-y-6 lg:space-y-10">
             <div className="space-y-4">
                 {flowRate0.gt(0) && (
                     <BalanceField
@@ -72,7 +72,7 @@ const TotalAmountsStreamedWidget = ({
                     />
                 )}
             </div>
-            <div className="w-full grid grid-cols-2 gap-2 space-x-2 rounded-xl"
+            <div className="w-full flex 2grid 2grid-cols-2 2gap-2 space-x-2"
             >
                 <DetailsDisplay
                     startDate={startDate}

@@ -12,10 +12,10 @@ const DetailRow = ({
     index
 }: DetailRowProps) => (
     <div className='w-full flex flex-row items-start space-x-4 text-sm'>
-        <p className='text-accentText'>
+        <p className='text-accentText text-xs'>
             {title}
         </p>
-        <p>
+        <p className='text-xs'>
             {data}
         </p>
     </div>
