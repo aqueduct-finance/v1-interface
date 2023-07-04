@@ -10,6 +10,7 @@ interface PriceHistoryProps {
     token0: TokenTypes | undefined;
     token1: TokenTypes | undefined;
     currentPrice: number;
+    loading: boolean;
 }
 
 const CustomTooltip = ({ payload, token1 }: { payload: any, token1: TokenTypes | undefined }) => {
@@ -34,7 +35,8 @@ const PriceChart = ({
     entry,
     token0,
     token1,
-    currentPrice
+    currentPrice,
+    loading
 }: PriceHistoryProps) => {
     const type = "monotone";
 
@@ -51,7 +53,7 @@ const PriceChart = ({
     const swapStartDisplay = 100 - ((priceHistory.length - actualEntry - 1) / (priceHistory.length - 1)) * 100;
 
     return (
-        <div className="flex items-start justify-center flex-col py-12 pl-5 mt-10">
+        <div className={`flex items-start justify-center flex-col py-12 pl-5 mt-10 ${loading ? 'animate-pulse' : ''}`}>
             <PairTitle
                 token0={token0}
                 token1={token1}
@@ -72,9 +74,14 @@ const PriceChart = ({
                     </linearGradient>
                 </defs>
                 <Line type={type} dataKey="token0Price" stroke="#5783F3" dot={false} strokeWidth="2px" />
-                <ReferenceLine x={actualEntry} stroke="rgb(255 255 255 / 0.5)" strokeWidth="2px" >
+                <ReferenceLine 
+                    x={actualEntry}
+                    stroke="rgb(255 255 255 / 0.15)" 
+                    strokeWidth="2px"
+                    strokeDasharray="3 3"
+                >
                     <Label
-                        stroke="rgb(255 255 255 / 0.5)"
+                        stroke="rgb(255 255 255 / 0.15)"
                         value="Entry"
                         position="bottom"
                         offset={10}

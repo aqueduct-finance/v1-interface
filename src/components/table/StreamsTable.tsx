@@ -4,7 +4,7 @@ import { useAccount, useNetwork } from "wagmi";
 import { useEthersProvider } from "../providers/provider";
 import BalancesField from "./BalancesField";
 import GenericTable from "./GenericTable";
-import { fDAIxp, fDAIxpfUSDCxpPool, fUSDCxp } from "../../utils/constants";
+import { fDAIxfUSDCxPool, fDAIx, fUSDCx } from "../../utils/constants";
 import getToken from "../../utils/getToken";
 import TextField from "./TextField";
 import PoolField from "./PoolField";
@@ -35,7 +35,7 @@ const StreamsTable = () => {
             });
 
             const pools = [
-                { token0: fDAIxp, token1: fUSDCxp, address: fDAIxpfUSDCxpPool },
+                { token0: fUSDCx, token1: fDAIx, address: fDAIxfUSDCxPool },
             ];
 
             const newData: ExplicitAny[][] = [];
@@ -102,8 +102,8 @@ const StreamsTable = () => {
     }, [address, chain, provider]);
 
     return (
-        <section className="flex flex-col items-center w-full">
-            <div className="w-full max-w-6xl">
+        <section className="flex flex-col items-center w-full pb-64">
+            <div className="w-full max-w-6xl px-4">
                 <GenericTable
                     title="My Swaps"
                     labels={["Pool", "Start Date", "Balances"]}

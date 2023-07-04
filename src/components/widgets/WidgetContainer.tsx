@@ -24,6 +24,7 @@ interface WidgetContainerProps {
     isDeleting?: boolean;
     setOutboundAndInboundTokens?: () => void;
     cancelStream?: () => void;
+    padding?: string;
 }
 
 const WidgetContainer = ({
@@ -39,10 +40,11 @@ const WidgetContainer = ({
     isLoading,
     isDeleting,
     setOutboundAndInboundTokens,
-    cancelStream
+    cancelStream,
+    padding
 }: WidgetContainerProps) => (
     <div
-        className={`poppins-font flex flex-col w-full md:p-2 space-y-6 rounded-[2rem] md:bg-black dark:md:border-gray-800/60 dark:md:bg-gray-900/60 border-[2px] border-[#262626] transition ${!isUnbounded && "  max-w-xl "
+        className={`poppins-font flex flex-col w-full ${padding} space-y-6 rounded-[2rem] md:bg-black dark:md:border-gray-800/60 dark:md:bg-gray-900/60 md:border-[2px] border-[#262626] transition ${!isUnbounded && "  max-w-xl "
             }`}
     >
         {(title || smallTitle || buttons) && (

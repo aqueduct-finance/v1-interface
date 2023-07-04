@@ -3,10 +3,10 @@ import type { AppProps } from 'next/app'
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
-import { goerli } from "wagmi/chains";
+import { polygonMumbai } from "wagmi/chains";
 import NavBar from '../components/NavBar';
 
-const chains = [goerli]
+const chains = [polygonMumbai]
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -36,7 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <div className='w-full flex items-center justify-center'>
               <NavBar />
             </div>
-            <div className='flex flex-grow items-center justify-center'>
+            <div className='flex flex-grow md:items-center justify-center'>
               <Component {...pageProps} />
             </div>
           </ConnectKitProvider>

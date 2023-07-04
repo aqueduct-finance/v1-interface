@@ -21,7 +21,7 @@ const TableRow = ({
     return (
         <Link href={link} data-test-id="table-row-link">
             <div
-                className="relative flex p-4 items-center bg-item rounded-xl hover:border-[#262626] border-2 border-transparent cursor-pointer transition-all duration-300"
+                className="relative flex p-4 items-center bg-item rounded-2xl hover:border-[#262626] border-2 border-transparent cursor-pointer transition-all duration-300"
                 aria-label="Table row"
             >
                 {data.map((d, i) => (

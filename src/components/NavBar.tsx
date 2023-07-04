@@ -33,13 +33,13 @@ function NavBar() {
 
 
     return (
-        <motion.div
+        <div
             className={`max-w-screen-2xl sticky top-0 left-0 flex w-full text-aqueductBlue p-4 lg:px-8 lg:pt-6 lg:pb-4 z-50 backdrop-blur-xl pixel-blur bg-aqueBg/40 overflow-hidden ${isOpen ? "flex-col lg:flex-row" : "flex-row"
                 }`}
-            initial="offscreen"
-            whileInView="onscreen"
-            variants={navBarVariants}
-            viewport={{ once: true }}
+            //initial="offscreen"
+            //whileInView="onscreen"
+            //variants={navBarVariants}
+            //viewport={{ once: true }}
         >
             <div className="flex w-full items-center space-x-2 lg:space-x-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -72,7 +72,7 @@ function NavBar() {
             >
                 <WalletConnectButton />
             </div>
-        </motion.div>
+        </div>
     );
 }
 
