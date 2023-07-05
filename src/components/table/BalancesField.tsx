@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useEthersProvider } from "../providers/provider";
 import { TokenTypes } from "../../types/TokenOption";
+import useSuperToken from "../helpers/useSuperToken";
+import { decodeRealTimeBalanceRes } from "../helpers/decodeRealTimeBalanceRes";
 
 const ANIMATION_MINIMUM_STEP_TIME = 100;
 const REFRESH_INTERVAL = 300; // 300 * 100 = 30000 ms = 30 s
@@ -28,72 +30,49 @@ const BalancesField = ({ token0, token1 }: BalancesFieldProps) => {
     );
     const provider = useEthersProvider();
     const { address } = useAccount();
+    const tokenContract0 = useSuperToken(token0.address);
+    const tokenContract1 = useSuperToken(token1.address);
 
     const updateTokenPairRealTimeBalanceCallback = useCallback(() => {
         async function updateTokenPairRealTimeBalance() {
-            const tokenABI = [
-                "function realtimeBalanceOf(address account, uint256 timestamp) public view returns (int256 availableBalance, uint256 deposit, uint256 owedDeposit)",
-            ];
-            if (address) {
-                const tokenContract0 = new ethers.Contract(
-                    token0.address,
-                    tokenABI,
-                    provider
-                );
-                const tokenContract1 = new ethers.Contract(
-                    token1.address,
-                    tokenABI,
-                    provider
-                );
+            if (address && tokenContract0 && tokenContract1) {
                 const currentTimestampBigNumber = ethers.BigNumber.from(
                     new Date().valueOf() // Milliseconds elapsed since UTC epoch, disregards timezone.
                 );
+                const currentTimestamp = currentTimestampBigNumber.div(1000).toString();
+                const futureTimestamp = currentTimestampBigNumber
+                    .div(1000)
+                    .add(
+                        (REFRESH_INTERVAL *
+                            ANIMATION_MINIMUM_STEP_TIME) /
+                        1000
+                    )
+                    .toString();
+
+                // batch call: get present and future balance for both tokens
+                const [presentBal0, futureBal0, presentBal1, futureBal1] = await Promise.all([
+                    tokenContract0.read.realtimeBalanceOf([address, currentTimestamp]),
+                    tokenContract0.read.realtimeBalanceOf([address, futureTimestamp]),
+                    tokenContract1.read.realtimeBalanceOf([address, currentTimestamp]),
+                    tokenContract1.read.realtimeBalanceOf([address, futureTimestamp]),
+                ])
+
+                const decodedPresentBal0 = decodeRealTimeBalanceRes(presentBal0);
+                const decodedFutureBal0 = decodeRealTimeBalanceRes(futureBal0);
+                const decodedPresentBal1 = decodeRealTimeBalanceRes(presentBal1);
+                const decodedFutureBal1 = decodeRealTimeBalanceRes(futureBal1);
 
                 // set token0 state
-                const initialBalance0 = (
-                    await tokenContract0.realtimeBalanceOf(
-                        address,
-                        currentTimestampBigNumber.div(1000).toString()
-                    )
-                ).availableBalance;
-                const futureBalance0 = (
-                    await tokenContract0.realtimeBalanceOf(
-                        address,
-                        currentTimestampBigNumber
-                            .div(1000)
-                            .add(
-                                (REFRESH_INTERVAL *
-                                    ANIMATION_MINIMUM_STEP_TIME) /
-                                1000
-                            )
-                            .toString()
-                    )
-                ).availableBalance;
+                const initialBalance0 = decodedPresentBal0.availableBalance;
+                const futureBalance0 = decodedFutureBal0.availableBalance;
                 setCurrentBalance0(initialBalance0);
                 setFlowRate0(
                     futureBalance0.sub(initialBalance0).div(REFRESH_INTERVAL)
                 );
 
                 // set token1 state
-                const initialBalance1 = (
-                    await tokenContract1.realtimeBalanceOf(
-                        address,
-                        currentTimestampBigNumber.div(1000).toString()
-                    )
-                ).availableBalance;
-                const futureBalance1 = (
-                    await tokenContract1.realtimeBalanceOf(
-                        address,
-                        currentTimestampBigNumber
-                            .div(1000)
-                            .add(
-                                (REFRESH_INTERVAL *
-                                    ANIMATION_MINIMUM_STEP_TIME) /
-                                1000
-                            )
-                            .toString()
-                    )
-                ).availableBalance;
+                const initialBalance1 = decodedPresentBal1.availableBalance;
+                const futureBalance1 = decodedFutureBal1.availableBalance;
                 setCurrentBalance1(initialBalance1);
                 setFlowRate1(
                     futureBalance1.sub(initialBalance1).div(REFRESH_INTERVAL)

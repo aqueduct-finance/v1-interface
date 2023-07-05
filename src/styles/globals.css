@@ -5,6 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background-color: black;
+}
+
 .Toastify__toast-container--bottom-right {
   margin-bottom: 5rem;
 }
@@ -15,6 +19,7 @@
 }
 
 @layer components {
+
   .black-shadow {
     filter: drop-shadow(5px 0px 15px black);
   }

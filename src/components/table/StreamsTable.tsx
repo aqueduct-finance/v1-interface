@@ -9,11 +9,14 @@ import getToken from "../../utils/getToken";
 import TextField from "./TextField";
 import PoolField from "./PoolField";
 import { ExplicitAny } from "../../types/ExplicitAny";
+import useCFA from "../helpers/useCFA";
+import { decodeGetFlowRes } from "../helpers/decodeGetFlowRes";
 
 const StreamsTable = () => {
     const provider = useEthersProvider();
     const { chain } = useNetwork();
     const { address } = useAccount();
+    const cfa = useCFA();
 
     const [data, setData] = useState<ExplicitAny[][]>();
     const [links, setLinks] = useState<string[]>();
@@ -29,10 +32,6 @@ const StreamsTable = () => {
             }
 
             const chainId = chain?.id;
-            const sf = await Framework.create({
-                chainId: Number(chainId),
-                provider,
-            });
 
             const pools = [
                 { token0: fUSDCx, token1: fDAIx, address: fDAIxfUSDCxPool },
@@ -42,13 +41,8 @@ const StreamsTable = () => {
             const newLinks: ExplicitAny[] = [];
             await Promise.all(
                 pools.map(async (p) => {
-                    const s = await sf.cfaV1.getFlow({
-                        superToken: p.token0,
-                        sender: address,
-                        receiver: p.address,
-                        providerOrSigner: provider,
-                    });
 
+                    // get tokens info
                     const token0 = await getToken({
                         tokenAddress: `${p.token0}`,
                         provider,
@@ -60,8 +54,19 @@ const StreamsTable = () => {
                         chainId,
                     });
 
-                    if (s.flowRate !== "0" && token0 && token1) {
-                        const date = new Date(s.timestamp);
+                    if (!token0 || !token1) {return}
+
+                    // batch call: get flows for both
+                    const [flowParams0, flowParams1] = await Promise.all([
+                        cfa.read.getFlow([p.token0, address, p.address]),
+                        cfa.read.getFlow([p.token1, address, p.address]),
+                    ])
+
+                    const decodedFlowParams0 = decodeGetFlowRes(flowParams0);
+                    const decodedFlowParams1 = decodeGetFlowRes(flowParams1);
+
+                    if (decodedFlowParams0.flowRate !== "0") {
+                        const date = new Date(Number(decodedFlowParams0.timestamp) * 1000);
                         newData.push([
                             { token0, token1 },
                             { title: date.toLocaleDateString() },
@@ -70,25 +75,16 @@ const StreamsTable = () => {
                         newLinks.push(
                             `pair/goerli/${address}/${token0.address}/${token1.address}`
                         );
-                    } else {
-                        const s2 = await sf.cfaV1.getFlow({
-                            superToken: p.token1,
-                            sender: address,
-                            receiver: p.address,
-                            providerOrSigner: provider,
-                        });
-
-                        if (s2.flowRate !== "0" && token0 && token1) {
-                            const date = new Date(s2.timestamp);
-                            newData.push([
-                                { token0, token1 },
-                                { title: date.toLocaleDateString() },
-                                { token0, token1 },
-                            ]);
-                            newLinks.push(
-                                `pair/goerli/${address}/${token0.address}/${token1.address}`
-                            );
-                        }
+                    } else if (decodedFlowParams1.flowRate !== "0") {
+                        const date = new Date(Number(decodedFlowParams1.timestamp) * 1000);
+                        newData.push([
+                            { token0, token1 },
+                            { title: date.toLocaleDateString() },
+                            { token0, token1 },
+                        ]);
+                        newLinks.push(
+                            `pair/goerli/${address}/${token0.address}/${token1.address}`
+                        );
                     }
                 })
             );

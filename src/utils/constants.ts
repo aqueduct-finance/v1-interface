@@ -18,6 +18,8 @@ export const fUSDCx = "0x42bb40bF79730451B11f6De1CbA222F17b87Afd7";
 
 export const fTokenDistributor = "0x422230026b1f13487Ce8e52Ee5da8db815F5F95C";
 
+export const cfaV1 = "0x49e565Ed1bdc17F3d220f72DF0857C26FA83F873";
+
 export const deleteFlowResolverTaskCreator =
     "0x84CB8098e82dd16B21866f69A2406E60FE64F98b";
 

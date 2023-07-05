@@ -30,6 +30,13 @@ import TotalAmountsStreamedWidget from "../../../../../components/widgets/TotalA
 import PriceChart from "../../../../../components/streamview/PriceChart";
 import { gql, useQuery } from "@apollo/client";
 import { PriceHistory } from "../../../../../types/PriceHistory";
+import useSuperToken from "../../../../../components/helpers/useSuperToken";
+import { decodeRealTimeBalanceRes } from "../../../../../components/helpers/decodeRealTimeBalanceRes";
+import usePool from "../../../../../components/helpers/usePool";
+import { decodeGetUserBalancesAtTimeRes } from "../../../../../components/helpers/decodeGetUserBalancesAtTimeRes";
+import useCFA from "../../../../../components/helpers/useCFA";
+import { decodeGetFlowRes } from "../../../../../components/helpers/decodeGetFlowRes";
+import { decodeGetReservesAtTimeRes } from "../../../../../components/helpers/decodeGetReservesAtTimeRes";
 
 const ANIMATION_MINIMUM_STEP_TIME = 10;
 const REFRESH_INTERVAL = 3000; // 300 * 100 = 30000 ms = 30 s
@@ -42,7 +49,7 @@ const PoolInteractionVisualization: NextPage = () => {
     const provider = useEthersProvider();
     const { chain } = useNetwork(); // TODO: use router param
     const { address } = useAccount();
-    const signer = useEthersSigner()
+    const signer = useEthersSigner();
 
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -92,6 +99,14 @@ const PoolInteractionVisualization: NextPage = () => {
     const [userAddress, setUserAddress] = useState<string>();
     const [token0, setToken0] = useState<TokenTypes>();
     const [token1, setToken1] = useState<TokenTypes>();
+    const [poolAddress, setPoolAddress] = useState<string>();
+
+    // contracts
+    const tokenContract0 = useSuperToken(token0?.address);
+    const tokenContract1 = useSuperToken(token1?.address);
+    const poolContract = usePool(poolAddress);
+    const cfa = useCFA();
+
     useEffect(() => {
         if (
             typeof router.query.address !== "string" ||
@@ -137,212 +152,97 @@ const PoolInteractionVisualization: NextPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.query]);
 
-    // Refresh function called on interval
-    // TODO: break this up into smaller functions
+    useEffect(() => {
+        if (token0 && token1) {
+            setPoolAddress(getPoolAddress(token0.address, token1.address));
+        }
+    }, [token0, token1])
+
     async function updateVars() {
-        const poolABI = [
-            "function getUserBalancesAtTime(address user, uint32 time) public view returns (uint balance0, uint balance1)",
-        ];
-        if (!userAddress || !provider || !token0 || !token1) {
+        if (!userAddress || !provider || !token0 || !token1 || !tokenContract0 || !tokenContract1 || !poolContract || !poolAddress) {
             return;
         }
 
-        const sf = await Framework.create({
-            chainId: mumbaiChainId,
-            provider,
-        });
-        const poolAddress = getPoolAddress(token0.address, token1.address);
-        const poolContract = new ethers.Contract(
-            poolAddress,
-            poolABI,
-            provider
-        );
         const currentTimestampBigNumber = ethers.BigNumber.from(
             new Date().valueOf() // Milliseconds elapsed since UTC epoch, disregards timezone.
         );
-
-        async function getTokenProps({
-            tokenAddress,
-        }: {
-            tokenAddress: string;
-        }): Promise<{
-            initialBalance: BigNumber;
-            initialTwapBalance: BigNumber;
-            flowRate: BigNumber;
-            twapFlowRate: BigNumber;
-            startDate: Date;
-        }> {
-            // get regular sf stream params
-            const flowInfo = await sf.cfaV1.getFlow({
-                superToken: tokenAddress,
-                sender: userAddress || "",
-                receiver: poolAddress,
-                providerOrSigner: provider,
-            });
-
-            // calculate regular streaming balances
-            let initialBalance: BigNumber = BigNumber.from(0);
-            let futureBalance: BigNumber = BigNumber.from(0);
-            if (BigNumber.from(flowInfo.flowRate).gt(0)) {
-                // use regular sf stream params
-                initialBalance = BigNumber.from(flowInfo.flowRate).mul(
-                    currentTimestampBigNumber
-                        .sub(
-                            ethers.BigNumber.from(flowInfo.timestamp.valueOf())
-                        )
-                        .div(1000)
-                );
-                futureBalance = BigNumber.from(flowInfo.flowRate).mul(
-                    currentTimestampBigNumber
-                        .sub(
-                            ethers.BigNumber.from(flowInfo.timestamp.valueOf())
-                        )
-                        .div(1000)
-                        .add(
-                            (REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) /
-                            1000
-                        )
-                );
-            }
-
-            // new consts
-            const decodeConst = BigNumber.from(2).pow(128);
-            const futureTimestampBigNumber: BigNumber =
-                currentTimestampBigNumber
-                    .div(1000)
-                    .add(
-                        (REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) / 1000
-                    );
-
-            // calculate twap balances
-            const initialBalances = await poolContract.getUserBalancesAtTime(
-                userAddress,
-                currentTimestampBigNumber.div(1000).toString()
-            );
-            const futureBalances = await poolContract.getUserBalancesAtTime(
-                userAddress,
-                futureTimestampBigNumber.toString()
-            );
-
-            const initialTwapBalance: BigNumber = BigNumber.from(tokenAddress == token0?.address ? initialBalances.balance0 : initialBalances.balance1);
-            const futureTwapBalance: BigNumber = BigNumber.from(tokenAddress == token0?.address ? futureBalances.balance0 : futureBalances.balance1);
-
-            return {
-                initialBalance,
-                initialTwapBalance,
-                flowRate: futureBalance
-                    .sub(initialBalance)
-                    .div(REFRESH_INTERVAL),
-                twapFlowRate: futureTwapBalance
-                    .sub(initialTwapBalance)
-                    .div(REFRESH_INTERVAL),
-                startDate: flowInfo.timestamp,
-            };
-        }
-
-        // set token0 state
-        // eslint-disable-next-line vars-on-top, no-var
-        var {
-            initialBalance,
-            initialTwapBalance,
-            flowRate,
-            twapFlowRate,
-            startDate,
-        } = await getTokenProps({ tokenAddress: token0.address });
-
-        // TODO: Proposed replacement:
-        // const token1Props = await getTokenProps({
-        //     tokenAddress: token1.address,
-        // });
-        // const initialBalance0 = token1Props.initialBalance;
-        // etc...
-
-        const initialBalance0 = initialBalance;
-        const initialTwapBalance0 = initialTwapBalance;
-        const startDate0 = startDate;
-        setCurrentBalance0(initialBalance);
-        setCurrentTwapBalance0(initialTwapBalance);
-        setFlowRate0(flowRate);
-        setTwapFlowRate0(twapFlowRate);
-        setIsTwap0(twapFlowRate.gt(0));
-
-        // set token1 state
-        // eslint-disable-next-line vars-on-top, no-var
-        var {
-            initialBalance,
-            initialTwapBalance,
-            flowRate,
-            twapFlowRate,
-            startDate,
-        } = await getTokenProps({ tokenAddress: token1.address });
-
-        setCurrentBalance1(initialBalance);
-        setCurrentTwapBalance1(initialTwapBalance);
-        setFlowRate1(flowRate);
-        setTwapFlowRate1(twapFlowRate);
-        setIsTwap1(twapFlowRate.gt(0));
-
-        /*
-        // compute average price from total amounts streamed
-        if (twapFlowRate.gt(0) && initialTwapBalance.gt(0)) {
-            setAveragePrice(
-                initialBalance0.mul(1000).div(initialTwapBalance).toNumber() /
+        const currentTimestamp = currentTimestampBigNumber.div(1000).toString();
+        const futureTimestamp = currentTimestampBigNumber
+            .div(1000)
+            .add(
+                (REFRESH_INTERVAL *
+                    ANIMATION_MINIMUM_STEP_TIME) /
                 1000
-            );
-        } else if (initialTwapBalance0.gt(0)) {
-            setAveragePrice(
-                initialBalance.mul(1000).div(initialTwapBalance0).toNumber() /
-                1000
-            );
-        }*/
+            )
+            .toString();
 
-        // get current price
-        /*
-        const token0Flow: BigNumber = await poolContract.getFlowIn(
-            token0.address
-        );
-        const token1Flow: BigNumber = await poolContract.getFlowIn(
-            token1.address
-        );
-        */
+        // batch call: get flows for both tokens + stored pool balances + reserves
+        const [flow0, flow1, presentLockedBalances, futureLockedBalances, reserves] = await Promise.all([
+            cfa.read.getFlow([token0.address, address, poolAddress]),
+            cfa.read.getFlow([token1.address, address, poolAddress]),
+            poolContract.read.getUserBalancesAtTime([address, currentTimestamp]),
+            poolContract.read.getUserBalancesAtTime([address, futureTimestamp]),
+            poolContract.read.getReservesAtTime([currentTimestamp])
+        ]);
 
-        // get current price
-        const token0Flow: BigNumber = BigNumber.from(
-            await sf.cfaV1.getNetFlow({
-                superToken: token0.address,
-                account: poolAddress,
-                providerOrSigner: provider,
-            })
-        );
-        const token1Flow: BigNumber = BigNumber.from(
-            await sf.cfaV1.getNetFlow({
-                superToken: token1.address,
-                account: poolAddress,
-                providerOrSigner: provider,
-            })
-        );
+        const decodedFlowParams0 = decodeGetFlowRes(flow0);
+        const decodedFlowParams1 = decodeGetFlowRes(flow1);
+        const decodedPresentLockedBalances = decodeGetUserBalancesAtTimeRes(presentLockedBalances);
+        const decodedFutureLockedBalances = decodeGetUserBalancesAtTimeRes(futureLockedBalances);
+        const decodedReserves = decodeGetReservesAtTimeRes(reserves);
 
-        /*
-        if (twapFlowRate.gt(0)) {
-            // setCurrentPrice(token1Flow.mul(1000).div(token0Flow).toNumber() / 1000);
-            setCurrentPrice(
-                token0Flow.mul(1000).div(token1Flow).toNumber() / 1000
-            );
-        } else {
-            // setCurrentPrice(token0Flow.mul(1000).div(token1Flow).toNumber() / 1000);
-            setCurrentPrice(
-                token1Flow.mul(1000).div(token0Flow).toNumber() / 1000
-            );
-        }
-        */
+        const initialBalance0 = BigNumber.from(decodedFlowParams0.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams0.timestamp).mul(1000)).div(1000));
+        const futureBalance0 = BigNumber.from(decodedFlowParams0.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams0.timestamp).mul(1000)).div(1000).add((REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) / 1000));
+        const initialBalance1 = BigNumber.from(decodedFlowParams1.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams1.timestamp).mul(1000)).div(1000));
+        const futureBalance1 = BigNumber.from(decodedFlowParams1.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams1.timestamp).mul(1000)).div(1000).add((REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) / 1000));
+
+        setCurrentBalance0(initialBalance0);
+        setCurrentBalance1(initialBalance1);
+        setCurrentTwapBalance0(decodedPresentLockedBalances.balance0);
+        setCurrentTwapBalance1(decodedPresentLockedBalances.balance1);
+        
+        setFlowRate0(futureBalance0.sub(initialBalance0).div(REFRESH_INTERVAL));
+        setFlowRate1(futureBalance1.sub(initialBalance1).div(REFRESH_INTERVAL));
+        const calcTwapFlowRate0 = decodedFutureLockedBalances.balance0.sub(decodedPresentLockedBalances.balance0).div(REFRESH_INTERVAL);
+        const calcTwapFlowRate1 = decodedFutureLockedBalances.balance1.sub(decodedPresentLockedBalances.balance1).div(REFRESH_INTERVAL);
+        setTwapFlowRate0(calcTwapFlowRate0);
+        setTwapFlowRate1(calcTwapFlowRate1);
+        setIsTwap0(calcTwapFlowRate0.gt(0));
+        setIsTwap1(calcTwapFlowRate1.gt(0));
 
         // set start date to most recent one
         setStartDate(
-            startDate0.valueOf() > startDate.valueOf() ? startDate0 : startDate
+            new Date(
+                (
+                    Number(decodedFlowParams0.timestamp) > Number(decodedFlowParams1.timestamp) ? 
+                    Number(decodedFlowParams0.timestamp) : 
+                    Number(decodedFlowParams1.timestamp)
+                ) * 1000
+            )
         );
 
+        // compute current and average prices
+        console.log(decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber())
+        if (BigNumber.from(decodedFlowParams0.flowRate).gt(0)) {
+            setCurrentPrice(
+                decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber() / 1000
+            );
+            console.log(initialBalance0.toString(), decodedPresentLockedBalances.balance1.toString())
+            setAveragePrice(
+                decodedPresentLockedBalances.balance1.mul(1000).div(initialBalance0).toNumber() / 1000
+            );
+        } else {
+            setCurrentPrice(
+                decodedReserves.reserve0.mul(1000).div(decodedReserves.reserve1).toNumber() / 1000
+            );
+            setAveragePrice(
+                decodedPresentLockedBalances.balance0.mul(1000).div(initialBalance1).toNumber() / 1000
+            );
+        }
+
+
         // update isLoading and positionFound vars
-        setPositionFound(initialBalance0.gt(0) || initialBalance.gt(0));
+        setPositionFound(initialBalance0.gt(0) || initialBalance1.gt(0));
         setIsLoading(false);
     }
 
@@ -375,7 +275,7 @@ const PoolInteractionVisualization: NextPage = () => {
         updateVars();
         // TODO: Assess missing dependency array values
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userAddress, chain, provider, token0, token1]);
+    }, [userAddress, chain, provider, token0, token1, poolAddress]);
 
     const cancelStream = async () => {
         let transactionHash;

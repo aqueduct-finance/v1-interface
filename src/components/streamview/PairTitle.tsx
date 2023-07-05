@@ -39,7 +39,7 @@ const PairTitle = ({
                         =
                     </p>
                     <p>
-                        {currentPrice.toFixed(2)} {token1.underlyingToken?.symbol}
+                        {currentPrice.toFixed(3)} {token1.underlyingToken?.symbol}
                     </p>
                 </div>
             </div>
