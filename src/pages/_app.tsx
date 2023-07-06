@@ -31,15 +31,18 @@ function MyApp({ Component, pageProps }: AppProps) {
     cache: new InMemoryCache(),
   });
 
-
   return (
-      <div className='flex flex-col min-h-screen bg-black text-white overflow-x-hidden'>
+      <div className='flex flex-col min-h-screen bg-black text-white 2overflow-x-hidden poppins-font'>
         <ApolloProvider client={client}>
           <WagmiConfig config={config}>
-            <ConnectKitProvider>
-              <div className='w-full flex items-center justify-center'>
-                <NavBar />
-              </div>
+            <ConnectKitProvider
+              customTheme={{
+                "--ck-overlay-backdrop-filter": "blur(10px)",
+                "--ck-font-family": `"Poppins", sans-serif`,
+                "--ck-connectbutton-font-weight": '600'
+              }}
+            >
+              <NavBar />
               <div className='flex flex-grow md:items-center justify-center'>
                 <Component {...pageProps} />
               </div>

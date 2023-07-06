@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { IoClose, IoMenu } from "react-icons/io5";
 import WalletConnectButton from "./WalletConnect";
 import { motion, Variants } from "framer-motion";
+import { ConnectKitButton } from "connectkit";
 
 declare global {
     interface Window {
@@ -33,13 +34,10 @@ function NavBar() {
 
 
     return (
+        <div className="w-full flex justify-center sticky top-0 z-50 backdrop-blur-xl pixel-blur">
         <div
-            className={`max-w-screen-2xl sticky top-0 left-0 flex w-full text-aqueductBlue p-4 lg:px-8 lg:pt-6 lg:pb-4 z-50 backdrop-blur-xl pixel-blur bg-aqueBg/40 overflow-hidden ${isOpen ? "flex-col lg:flex-row" : "flex-row"
+            className={`max-w-screen-2xl 2bg-red-500 flex w-full text-aqueductBlue p-4 lg:px-8 lg:pt-6 lg:pb-4 overflow-hidden ${isOpen ? "flex-col lg:flex-row" : "flex-row"
                 }`}
-            //initial="offscreen"
-            //whileInView="onscreen"
-            //variants={navBarVariants}
-            //viewport={{ once: true }}
         >
             <div className="flex w-full items-center space-x-2 lg:space-x-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -70,8 +68,10 @@ function NavBar() {
                 className={`${isOpen ? "flex flex-col space-y-4 pt-4" : "hidden"
                     } md:flex md:flex-row md:space-y-0 md:pt-0 md:space-x-3`}
             >
-                <WalletConnectButton />
+                {/*<WalletConnectButton />*/}
+                <ConnectKitButton />
             </div>
+        </div>
         </div>
     );
 }

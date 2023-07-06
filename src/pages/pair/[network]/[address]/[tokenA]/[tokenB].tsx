@@ -163,86 +163,90 @@ const PoolInteractionVisualization: NextPage = () => {
             return;
         }
 
-        const currentTimestampBigNumber = ethers.BigNumber.from(
-            new Date().valueOf() // Milliseconds elapsed since UTC epoch, disregards timezone.
-        );
-        const currentTimestamp = currentTimestampBigNumber.div(1000).toString();
-        const futureTimestamp = currentTimestampBigNumber
-            .div(1000)
-            .add(
-                (REFRESH_INTERVAL *
-                    ANIMATION_MINIMUM_STEP_TIME) /
-                1000
-            )
-            .toString();
-
-        // batch call: get flows for both tokens + stored pool balances + reserves
-        const [flow0, flow1, presentLockedBalances, futureLockedBalances, reserves] = await Promise.all([
-            cfa.read.getFlow([token0.address, address, poolAddress]),
-            cfa.read.getFlow([token1.address, address, poolAddress]),
-            poolContract.read.getUserBalancesAtTime([address, currentTimestamp]),
-            poolContract.read.getUserBalancesAtTime([address, futureTimestamp]),
-            poolContract.read.getReservesAtTime([currentTimestamp])
-        ]);
-
-        const decodedFlowParams0 = decodeGetFlowRes(flow0);
-        const decodedFlowParams1 = decodeGetFlowRes(flow1);
-        const decodedPresentLockedBalances = decodeGetUserBalancesAtTimeRes(presentLockedBalances);
-        const decodedFutureLockedBalances = decodeGetUserBalancesAtTimeRes(futureLockedBalances);
-        const decodedReserves = decodeGetReservesAtTimeRes(reserves);
-
-        const initialBalance0 = BigNumber.from(decodedFlowParams0.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams0.timestamp).mul(1000)).div(1000));
-        const futureBalance0 = BigNumber.from(decodedFlowParams0.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams0.timestamp).mul(1000)).div(1000).add((REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) / 1000));
-        const initialBalance1 = BigNumber.from(decodedFlowParams1.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams1.timestamp).mul(1000)).div(1000));
-        const futureBalance1 = BigNumber.from(decodedFlowParams1.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams1.timestamp).mul(1000)).div(1000).add((REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) / 1000));
-
-        setCurrentBalance0(initialBalance0);
-        setCurrentBalance1(initialBalance1);
-        setCurrentTwapBalance0(decodedPresentLockedBalances.balance0);
-        setCurrentTwapBalance1(decodedPresentLockedBalances.balance1);
-        
-        setFlowRate0(futureBalance0.sub(initialBalance0).div(REFRESH_INTERVAL));
-        setFlowRate1(futureBalance1.sub(initialBalance1).div(REFRESH_INTERVAL));
-        const calcTwapFlowRate0 = decodedFutureLockedBalances.balance0.sub(decodedPresentLockedBalances.balance0).div(REFRESH_INTERVAL);
-        const calcTwapFlowRate1 = decodedFutureLockedBalances.balance1.sub(decodedPresentLockedBalances.balance1).div(REFRESH_INTERVAL);
-        setTwapFlowRate0(calcTwapFlowRate0);
-        setTwapFlowRate1(calcTwapFlowRate1);
-        setIsTwap0(calcTwapFlowRate0.gt(0));
-        setIsTwap1(calcTwapFlowRate1.gt(0));
-
-        // set start date to most recent one
-        setStartDate(
-            new Date(
-                (
-                    Number(decodedFlowParams0.timestamp) > Number(decodedFlowParams1.timestamp) ? 
-                    Number(decodedFlowParams0.timestamp) : 
-                    Number(decodedFlowParams1.timestamp)
-                ) * 1000
-            )
-        );
-
-        // compute current and average prices
-        console.log(decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber())
-        if (BigNumber.from(decodedFlowParams0.flowRate).gt(0)) {
-            setCurrentPrice(
-                decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber() / 1000
+        try {
+            const currentTimestampBigNumber = ethers.BigNumber.from(
+                new Date().valueOf() // Milliseconds elapsed since UTC epoch, disregards timezone.
             );
-            console.log(initialBalance0.toString(), decodedPresentLockedBalances.balance1.toString())
-            setAveragePrice(
-                decodedPresentLockedBalances.balance1.mul(1000).div(initialBalance0).toNumber() / 1000
+            const currentTimestamp = currentTimestampBigNumber.div(1000).toString();
+            const futureTimestamp = currentTimestampBigNumber
+                .div(1000)
+                .add(
+                    (REFRESH_INTERVAL *
+                        ANIMATION_MINIMUM_STEP_TIME) /
+                    1000
+                )
+                .toString();
+
+            // batch call: get flows for both tokens + stored pool balances + reserves
+            const [flow0, flow1, presentLockedBalances, futureLockedBalances, reserves] = await Promise.all([
+                cfa.read.getFlow([token0.address, userAddress, poolAddress]),
+                cfa.read.getFlow([token1.address, userAddress, poolAddress]),
+                poolContract.read.getUserBalancesAtTime([userAddress, currentTimestamp]),
+                poolContract.read.getUserBalancesAtTime([userAddress, futureTimestamp]),
+                poolContract.read.getReservesAtTime([currentTimestamp])
+            ]);
+
+            const decodedFlowParams0 = decodeGetFlowRes(flow0);
+            const decodedFlowParams1 = decodeGetFlowRes(flow1);
+            const decodedPresentLockedBalances = decodeGetUserBalancesAtTimeRes(presentLockedBalances);
+            const decodedFutureLockedBalances = decodeGetUserBalancesAtTimeRes(futureLockedBalances);
+            const decodedReserves = decodeGetReservesAtTimeRes(reserves);
+
+            const initialBalance0 = BigNumber.from(decodedFlowParams0.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams0.timestamp).mul(1000)).div(1000));
+            const futureBalance0 = BigNumber.from(decodedFlowParams0.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams0.timestamp).mul(1000)).div(1000).add((REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) / 1000));
+            const initialBalance1 = BigNumber.from(decodedFlowParams1.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams1.timestamp).mul(1000)).div(1000));
+            const futureBalance1 = BigNumber.from(decodedFlowParams1.flowRate).mul(currentTimestampBigNumber.sub(BigNumber.from(decodedFlowParams1.timestamp).mul(1000)).div(1000).add((REFRESH_INTERVAL * ANIMATION_MINIMUM_STEP_TIME) / 1000));
+
+            setCurrentBalance0(initialBalance0);
+            setCurrentBalance1(initialBalance1);
+            setCurrentTwapBalance0(decodedPresentLockedBalances.balance0);
+            setCurrentTwapBalance1(decodedPresentLockedBalances.balance1);
+            
+            setFlowRate0(futureBalance0.sub(initialBalance0).div(REFRESH_INTERVAL));
+            setFlowRate1(futureBalance1.sub(initialBalance1).div(REFRESH_INTERVAL));
+            const calcTwapFlowRate0 = decodedFutureLockedBalances.balance0.sub(decodedPresentLockedBalances.balance0).div(REFRESH_INTERVAL);
+            const calcTwapFlowRate1 = decodedFutureLockedBalances.balance1.sub(decodedPresentLockedBalances.balance1).div(REFRESH_INTERVAL);
+            setTwapFlowRate0(calcTwapFlowRate0);
+            setTwapFlowRate1(calcTwapFlowRate1);
+            setIsTwap0(calcTwapFlowRate0.gt(0));
+            setIsTwap1(calcTwapFlowRate1.gt(0));
+
+            // set start date to most recent one
+            setStartDate(
+                new Date(
+                    (
+                        Number(decodedFlowParams0.timestamp) > Number(decodedFlowParams1.timestamp) ? 
+                        Number(decodedFlowParams0.timestamp) : 
+                        Number(decodedFlowParams1.timestamp)
+                    ) * 1000
+                )
             );
-        } else {
-            setCurrentPrice(
-                decodedReserves.reserve0.mul(1000).div(decodedReserves.reserve1).toNumber() / 1000
-            );
-            setAveragePrice(
-                decodedPresentLockedBalances.balance0.mul(1000).div(initialBalance1).toNumber() / 1000
-            );
+
+            // compute current and average prices
+            console.log(decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber())
+            if (BigNumber.from(decodedFlowParams0.flowRate).gt(0)) {
+                setCurrentPrice(
+                    decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber() / 1000
+                );
+                console.log(initialBalance0.toString(), decodedPresentLockedBalances.balance1.toString())
+                setAveragePrice(
+                    decodedPresentLockedBalances.balance1.mul(1000).div(initialBalance0).toNumber() / 1000
+                );
+            } else if (BigNumber.from(decodedFlowParams1.flowRate).gt(0)) {
+                setCurrentPrice(
+                    decodedReserves.reserve0.mul(1000).div(decodedReserves.reserve1).toNumber() / 1000
+                );
+                setAveragePrice(
+                    decodedPresentLockedBalances.balance0.mul(1000).div(initialBalance1).toNumber() / 1000
+                );
+            }
+
+            // update isLoading and positionFound vars
+            setPositionFound(initialBalance0.gt(0) || initialBalance1.gt(0));
+        } catch {
+            setPositionFound(false)
         }
 
-
-        // update isLoading and positionFound vars
-        setPositionFound(initialBalance0.gt(0) || initialBalance1.gt(0));
         setIsLoading(false);
     }
 
@@ -461,6 +465,11 @@ const PoolInteractionVisualization: NextPage = () => {
                     className={`w-full max-w-4xl space-y-4 mx-4 md:mx-8 pb-12 ${isLoading ? "opacity-" : ""
                         }`}
                 >
+                    <div className="text-2xl text-white/50 hover:text-white transition-all duration-300 rounded-2xl bg-item px-3 py-2 w-min">
+                        <Link href="/">
+                            <IoArrowBack />
+                        </Link>
+                    </div>
                     <PriceChart
                         priceHistory={convertedData}
                         entry={closestDateRef.current}
