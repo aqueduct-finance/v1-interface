@@ -201,7 +201,7 @@ const PoolInteractionVisualization: NextPage = () => {
             setCurrentBalance1(initialBalance1);
             setCurrentTwapBalance0(decodedPresentLockedBalances.balance0);
             setCurrentTwapBalance1(decodedPresentLockedBalances.balance1);
-            
+
             setFlowRate0(futureBalance0.sub(initialBalance0).div(REFRESH_INTERVAL));
             setFlowRate1(futureBalance1.sub(initialBalance1).div(REFRESH_INTERVAL));
             const calcTwapFlowRate0 = decodedFutureLockedBalances.balance0.sub(decodedPresentLockedBalances.balance0).div(REFRESH_INTERVAL);
@@ -215,9 +215,9 @@ const PoolInteractionVisualization: NextPage = () => {
             setStartDate(
                 new Date(
                     (
-                        Number(decodedFlowParams0.timestamp) > Number(decodedFlowParams1.timestamp) ? 
-                        Number(decodedFlowParams0.timestamp) : 
-                        Number(decodedFlowParams1.timestamp)
+                        Number(decodedFlowParams0.timestamp) > Number(decodedFlowParams1.timestamp) ?
+                            Number(decodedFlowParams0.timestamp) :
+                            Number(decodedFlowParams1.timestamp)
                     ) * 1000
                 )
             );
@@ -243,7 +243,8 @@ const PoolInteractionVisualization: NextPage = () => {
 
             // update isLoading and positionFound vars
             setPositionFound(initialBalance0.gt(0) || initialBalance1.gt(0));
-        } catch {
+        } catch (err) {
+            console.log(err)
             setPositionFound(false)
         }
 
@@ -358,7 +359,7 @@ const PoolInteractionVisualization: NextPage = () => {
 
     const GET_DATA = gql`
     {
-      syncs(first: 5) {
+      syncs(first: 50) {
           id
           reserve0
           reserve1
@@ -373,38 +374,25 @@ const PoolInteractionVisualization: NextPage = () => {
     const minDifferenceRef = useRef(Infinity);
     const closestDateRef = useRef<number | null>(null);
     const [loading, setLoading] = useState(true);
+    const periodSelect = useRef<string>('1W');
 
     useEffect(() => {
-        /*const data = {
-            syncs: []
-        };
-        
-        const initialSync = {
-            blockTimestamp: Math.floor(Date.now() / 1000),
-            reserve0: "1000",
-            reserve1: "1000"
-        };
-        
-        data.syncs.push(initialSync);
-        
-        for (let i = 0; i < 1000; i++) {
-            const lastSync = data.syncs[data.syncs.length - 1];
-            const multiplier = Math.random() * (1.1 - 0.9) + 0.9;
-            const newReserve0 = parseInt(lastSync.reserve0) * multiplier;
-            const newReserve1 = parseInt(lastSync.reserve0) * parseInt(lastSync.reserve1) / newReserve0;
-            const newSync = {
-                blockTimestamp: lastSync.blockTimestamp + 10,
-                reserve0: Math.floor(newReserve0).toString(),
-                reserve1: Math.floor(newReserve1).toString()
-            };
-            data.syncs.push(newSync);
-        }
-        console.log(data)*/
-
         if (data !== undefined) {
             if (!startDate) {
                 return;
             }
+
+            const currentDate = new Date();
+
+            console.log(currentDate)
+
+            const timePeriodOptions: { [key: string]: number } = {
+                '1H': currentDate.getTime() - (60 * 60 * 1000),
+                '1D': currentDate.getTime() - (24 * 60 * 60 * 1000),
+                '1W': currentDate.getTime() - (7 * 24 * 60 * 60 * 1000),
+                '1M': new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).getTime(),
+                '1Y': new Date(currentDate.getFullYear() - 1, currentDate.getMonth()).getTime(),
+            };
 
             try {
                 setLoading(true);
@@ -416,35 +404,54 @@ const PoolInteractionVisualization: NextPage = () => {
                     reserve0: { toString: () => string };
                     reserve1: { toString: () => string };
                 }) => {
-                    currentIndex++;
-
+                    currentIndex++
                     const blockTimestamp = new Date(item.blockTimestamp * 1000);
-                    const difference = Math.abs(
-                        blockTimestamp.getTime() - startDate.getTime()
-                    );
 
-                    if (difference < minDifferenceRef.current) {
-                        minDifferenceRef.current = difference;
-                        closestDateRef.current = currentIndex;
+                    const formattedDate = blockTimestamp.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true
+                    });
+
+                    if (blockTimestamp.getTime() >= timePeriodOptions[periodSelect.current]) {
+                        const difference = Math.abs(
+                            blockTimestamp.getTime() - startDate.getTime()
+                        );
+
+                        if (difference < minDifferenceRef.current) {
+                            minDifferenceRef.current = difference;
+                            closestDateRef.current = currentIndex;
+                        }
+
+                        const convertedItem: PriceHistory = {
+                            ...item,
+                            blockTimestamp: formattedDate,
+                            token0Price: parseFloat(ethers.utils.formatEther(item.reserve1.toString())) / parseFloat(ethers.utils.formatEther(item.reserve0.toString())),
+                        };
+
+                        newConvertedData.push(convertedItem);
                     }
-
-                    const convertedItem: PriceHistory = {
-                        ...item,
-                        blockTimestamp: blockTimestamp,
-                        token0Price: parseFloat(ethers.utils.formatEther(item.reserve1.toString())) / parseFloat(ethers.utils.formatEther(item.reserve0.toString())),
-                    };
-                    newConvertedData.push(convertedItem);
                 });
 
-                const currentDate = new Date();
+                const formattedCurrentDate = currentDate.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
 
-                const currentPriceData = { blockTimestamp: currentDate, token0Price: currentPrice }
+                const currentPriceData = { blockTimestamp: formattedCurrentDate, token0Price: currentPrice }
 
                 newConvertedData.push(currentPriceData)
 
-                newConvertedData.sort(
-                    (a, b) => a.blockTimestamp?.getTime() - b.blockTimestamp?.getTime()
-                );
+                newConvertedData.sort((a, b) => {
+                    const dateA = new Date(a.blockTimestamp);
+                    const dateB = new Date(b.blockTimestamp);
+                    return dateA.getTime() - dateB.getTime();
+                });
 
                 setConvertedData(newConvertedData); // Update the state with the new converted data
                 setLoading(false);
@@ -454,7 +461,7 @@ const PoolInteractionVisualization: NextPage = () => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, startDate]);
+    }, [data, startDate, periodSelect.current]);
 
 
 
@@ -477,6 +484,7 @@ const PoolInteractionVisualization: NextPage = () => {
                         token1={token1}
                         currentPrice={currentPrice}
                         loading={loading === true && convertedData.length <= 0}
+                        period={periodSelect}
                     />
                     {userAddress && token0 && token1 && (
                         <div className="space-y-12 md:space-y-4">

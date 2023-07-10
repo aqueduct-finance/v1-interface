@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
 import { TokenTypes } from "../../types/TokenOption";
 import { PriceHistory } from "../../types/PriceHistory";
@@ -11,23 +11,23 @@ interface PriceHistoryProps {
     token1: TokenTypes | undefined;
     currentPrice: number;
     loading: boolean;
+    period: MutableRefObject<string>;
 }
 
 const CustomTooltip = ({ payload, token1 }: { payload: any, token1: TokenTypes | undefined }) => {
     return (
         <div className="bg-item rounded-xl">
             <div>
-                {payload.map((pld: { fill: any; value: number; }) => (
+                {payload?.map((pld: { fill: any; value: number; }, index: number) => (
                     // eslint-disable-next-line react/jsx-key
-                    <div className="flex flex-row whitespace-nowrap" style={{ display: "inline-block", padding: 10 }}>
+                    <div className="flex flex-col whitespace-nowrap" style={{ display: "inline-block", padding: 10 }}>
                         <p style={{ color: pld.fill }}>{pld.value.toFixed(5)}  {token1?.underlyingToken?.symbol}</p>
+                        <p style={{ color: "rgb(255 255 255 / 0.5)" }}>{payload[index].payload.blockTimestamp.toString()}</p>
                     </div>
                 ))}
             </div>
         </div>
     );
-
-    return null;
 };
 
 const PriceChart = ({
@@ -36,7 +36,8 @@ const PriceChart = ({
     token0,
     token1,
     currentPrice,
-    loading
+    loading,
+    period
 }: PriceHistoryProps) => {
     const type = "monotone";
 
@@ -58,6 +59,7 @@ const PriceChart = ({
                 token0={token0}
                 token1={token1}
                 currentPrice={currentPrice}
+                period={period}
             />
             <LineChart
                 width={800}
@@ -73,10 +75,10 @@ const PriceChart = ({
                         <stop offset="100%" stopColor="#5783F3" />
                     </linearGradient>
                 </defs>
-                <Line type={type} dataKey="token0Price" stroke="#5783F3" dot={false} strokeWidth="2px" />
-                <ReferenceLine 
+                <Line type={type} dataKey="token0Price" stroke="url(#graph)" dot={false} strokeWidth="2px" />
+                <ReferenceLine
                     x={actualEntry}
-                    stroke="rgb(255 255 255 / 0.15)" 
+                    stroke="rgb(255 255 255 / 0.15)"
                     strokeWidth="2px"
                     strokeDasharray="3 3"
                 >
@@ -89,7 +91,7 @@ const PriceChart = ({
                 </ReferenceLine>
                 <XAxis dataKey="blockTimestamp.getTime()" axisLine={false} tickLine={false} tick={false} />
                 <YAxis domain={[minPrice - minExtra, maxPrice + maxExtra]} axisLine={false} tickLine={false} tick={false} />
-                {/*<Tooltip content={<CustomTooltip payload={undefined} token1={token1} />} />*/}
+                <Tooltip content={<CustomTooltip payload={undefined} token1={token1} />} />
             </LineChart>
         </div>
     )

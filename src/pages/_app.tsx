@@ -27,29 +27,29 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 
   const client = new ApolloClient({
-    uri: 'https://api.studio.thegraph.com/query/49133/aqueduct/version/latest',
+    uri: 'https://api.studio.thegraph.com/query/49133/aqueductv1/version/latest',
     cache: new InMemoryCache(),
   });
 
   return (
-      <div className='flex flex-col min-h-screen bg-black text-white 2overflow-x-hidden poppins-font'>
-        <ApolloProvider client={client}>
-          <WagmiConfig config={config}>
-            <ConnectKitProvider
-              customTheme={{
-                "--ck-overlay-backdrop-filter": "blur(10px)",
-                "--ck-font-family": `"Poppins", sans-serif`,
-                "--ck-connectbutton-font-weight": '600'
-              }}
-            >
-              <NavBar />
-              <div className='flex flex-grow md:items-center justify-center'>
-                <Component {...pageProps} />
-              </div>
-            </ConnectKitProvider>
-          </WagmiConfig>
-        </ApolloProvider>
-      </div>
+    <div className='flex flex-col min-h-screen bg-black text-white 2overflow-x-hidden poppins-font'>
+      <ApolloProvider client={client}>
+        <WagmiConfig config={config}>
+          <ConnectKitProvider
+            customTheme={{
+              "--ck-overlay-backdrop-filter": "blur(10px)",
+              "--ck-font-family": `"Poppins", sans-serif`,
+              "--ck-connectbutton-font-weight": '600'
+            }}
+          >
+            <NavBar />
+            <div className='flex flex-grow md:items-center justify-center'>
+              <Component {...pageProps} />
+            </div>
+          </ConnectKitProvider>
+        </WagmiConfig>
+      </ApolloProvider>
+    </div>
   )
 }
 

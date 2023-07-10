@@ -1,4 +1,4 @@
 export interface PriceHistory {
-    blockTimestamp: Date;
+    blockTimestamp: string;
     token0Price: number;
 }
