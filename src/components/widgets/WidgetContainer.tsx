@@ -50,7 +50,7 @@ const WidgetContainer = ({
         {(title || smallTitle || buttons) && (
             <div className="flex font-bold space-x-4 text-2xl whitespace-nowrap p-4">
                 {title && (
-                    <div className="px-2 py-2 rounded-xl  w-min text-white">
+                    <div className="px-0 py-2 rounded-xl  w-min text-white">
                         {title}
                     </div>
                 )}

@@ -107,7 +107,7 @@ const BalancesField = ({ token0, token1 }: BalancesFieldProps) => {
     }, [address, updateTokenPairRealTimeBalanceCallback]);
 
     return (
-        <div className="flex items-center space-x-2 monospace-font text-sm mr-8">
+        <div className="flex items-center space-x-2 monospace-font text-sm mr-8 overflow-hidden">
             <p className="tracking-widest font-semibold">
                 {parseFloat(
                     ethers.utils.formatEther(currentBalance0)

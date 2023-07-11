@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
-import StreamsTable from '../components/table/StreamsTable';
+import SwapWidget from '../components/widgets/SwapWidget';
 
-const Home: NextPage = () => <StreamsTable />;
+const Home: NextPage = () => <SwapWidget />;
 
 export default Home

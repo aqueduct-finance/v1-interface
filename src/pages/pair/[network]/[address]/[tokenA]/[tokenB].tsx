@@ -223,12 +223,10 @@ const PoolInteractionVisualization: NextPage = () => {
             );
 
             // compute current and average prices
-            console.log(decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber())
             if (BigNumber.from(decodedFlowParams0.flowRate).gt(0)) {
                 setCurrentPrice(
                     decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber() / 1000
                 );
-                console.log(initialBalance0.toString(), decodedPresentLockedBalances.balance1.toString())
                 setAveragePrice(
                     decodedPresentLockedBalances.balance1.mul(1000).div(initialBalance0).toNumber() / 1000
                 );
@@ -243,8 +241,7 @@ const PoolInteractionVisualization: NextPage = () => {
 
             // update isLoading and positionFound vars
             setPositionFound(initialBalance0.gt(0) || initialBalance1.gt(0));
-        } catch (err) {
-            console.log(err)
+        } catch {
             setPositionFound(false)
         }
 
@@ -357,15 +354,20 @@ const PoolInteractionVisualization: NextPage = () => {
         }
     };
 
+    const currentDate = new Date();
+
+    const totalPeriod = new Date(currentDate.getFullYear() - 1, currentDate.getMonth()).getTime();
+
     const GET_DATA = gql`
     {
-      syncs(first: 50) {
+        syncs(first: 500) {
           id
           reserve0
           reserve1
           blockTimestamp
+        }
       }
-    }
+      
   `;
 
     const { error, data } = useQuery(GET_DATA);
@@ -384,22 +386,29 @@ const PoolInteractionVisualization: NextPage = () => {
 
             const currentDate = new Date();
 
-            console.log(currentDate)
-
             const timePeriodOptions: { [key: string]: number } = {
                 '1H': currentDate.getTime() - (60 * 60 * 1000),
                 '1D': currentDate.getTime() - (24 * 60 * 60 * 1000),
                 '1W': currentDate.getTime() - (7 * 24 * 60 * 60 * 1000),
                 '1M': new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).getTime(),
-                '1Y': new Date(currentDate.getFullYear() - 1, currentDate.getMonth()).getTime(),
+                '1Y': totalPeriod,
             };
+
+            closestDateRef.current = null;
+            minDifferenceRef.current = Infinity;
 
             try {
                 setLoading(true);
                 let currentIndex = -1;
-                const newConvertedData: PriceHistory[] = []; // Create a new array to store the converted data
+                const newConvertedData: PriceHistory[] = [];
 
-                [...data.syncs].forEach((item: {
+                const sortedSyncs = [...data.syncs].sort((a, b) => {
+                    const dateA = new Date(a.blockTimestamp * 1000);
+                    const dateB = new Date(b.blockTimestamp * 1000);
+                    return dateA.getTime() - dateB.getTime();
+                });
+
+                sortedSyncs.forEach((item: {
                     blockTimestamp: any;
                     reserve0: { toString: () => string };
                     reserve1: { toString: () => string };
@@ -416,12 +425,10 @@ const PoolInteractionVisualization: NextPage = () => {
                     });
 
                     if (blockTimestamp.getTime() >= timePeriodOptions[periodSelect.current]) {
-                        const difference = Math.abs(
-                            blockTimestamp.getTime() - startDate.getTime()
-                        );
 
-                        if (difference < minDifferenceRef.current) {
-                            minDifferenceRef.current = difference;
+                        const formattedStartDate = Math.floor(startDate.getTime() / 1000).toString();
+
+                        if (item.blockTimestamp === formattedStartDate) {
                             closestDateRef.current = currentIndex;
                         }
 
@@ -453,17 +460,14 @@ const PoolInteractionVisualization: NextPage = () => {
                     return dateA.getTime() - dateB.getTime();
                 });
 
-                setConvertedData(newConvertedData); // Update the state with the new converted data
+                setConvertedData(newConvertedData);
                 setLoading(false);
-            } catch (err) {
+            } catch {
                 setLoading(false);
-                console.log(err);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, startDate, periodSelect.current]);
-
-
 
     return (
         <div className="flex justify-center w-full">

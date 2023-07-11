@@ -78,7 +78,7 @@ const TotalAmountsStreamedWidget = ({
                     startDate={startDate}
                     endDate={endDate}
                     flowrate0={flowRate0}
-                    txHash="0x"
+                    token1={token1}
                     token0={token0}
                 />
                 <AveragePrice

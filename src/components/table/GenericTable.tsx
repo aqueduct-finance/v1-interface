@@ -25,7 +25,7 @@ const GenericTable = ({
     noDataMessage,
 }: GenericTableProps) => (
     <WidgetContainer padding="md:p-4" title={title} isUnbounded>
-        <div className="flex px-4 text-xl text-white">
+        <div className="flex px-4 text-xl text-white font-semibold">
             {labels.map((label, i) => (
                 <div className={columnProps[i]} key={label}>
                     {label}
@@ -60,7 +60,7 @@ const GenericTable = ({
                 ))}
             </div>
         ) : (
-            <>{!isLoading && 
+            <>{!isLoading &&
                 <div className="pt-4">
                     <p className="p-4 text-white/50 w-full bg-item flex items-center justify-center rounded-2xl">{noDataMessage}</p>
                 </div>

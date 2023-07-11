@@ -39,7 +39,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             customTheme={{
               "--ck-overlay-backdrop-filter": "blur(10px)",
               "--ck-font-family": `"Poppins", sans-serif`,
-              "--ck-connectbutton-font-weight": '600'
+              "--ck-connectbutton-font-weight": '600',
+              "--ck-connectbutton-background": "#272727"
             }}
           >
             <NavBar />

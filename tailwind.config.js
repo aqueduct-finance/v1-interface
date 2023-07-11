@@ -10,7 +10,7 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                aqueductBlue: "#0460CE",
+                aqueductBlue: "#085FD0",
                 warningYellow: "#FDB833",
                 darkBlue: "#0e2138",
                 blueBlack: "#0b1521",
@@ -20,6 +20,7 @@ module.exports = {
                 ethBlue: "#00ABEE",
                 ethPink: "#E7018A",
                 item: "#121212",
+                highlightedItem: "#272727",
                 accentText: "rgb(255 255 255 / 0.5)"
             },
             screens: {

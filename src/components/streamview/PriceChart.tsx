@@ -75,20 +75,22 @@ const PriceChart = ({
                         <stop offset="100%" stopColor="#5783F3" />
                     </linearGradient>
                 </defs>
-                <Line type={type} dataKey="token0Price" stroke="url(#graph)" dot={false} strokeWidth="2px" />
-                <ReferenceLine
-                    x={actualEntry}
-                    stroke="rgb(255 255 255 / 0.15)"
-                    strokeWidth="2px"
-                    strokeDasharray="3 3"
-                >
-                    <Label
+                <Line type={type} dataKey="token0Price" stroke={`${swapStartDisplay === Infinity ? "#5783F3" : "url(#graph)"}`} dot={false} strokeWidth="2px" />
+                {entry && (
+                    <ReferenceLine
+                        x={actualEntry}
                         stroke="rgb(255 255 255 / 0.15)"
-                        value="Entry"
-                        position="bottom"
-                        offset={10}
-                    />
-                </ReferenceLine>
+                        strokeWidth="2px"
+                        strokeDasharray="3 3"
+                    >
+                        <Label
+                            stroke="rgb(255 255 255 / 0.15)"
+                            value="Entry"
+                            position="bottom"
+                            offset={10}
+                        />
+                    </ReferenceLine>
+                )}
                 <XAxis dataKey="blockTimestamp.getTime()" axisLine={false} tickLine={false} tick={false} />
                 <YAxis domain={[minPrice - minExtra, maxPrice + maxExtra]} axisLine={false} tickLine={false} tick={false} />
                 <Tooltip content={<CustomTooltip payload={undefined} token1={token1} />} />
