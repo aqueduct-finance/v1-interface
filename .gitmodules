@@ -1,0 +1,3 @@
+[submodule "widget"]
+	path = widget
+	url = https://github.com/aqueduct-finance/widget.git
