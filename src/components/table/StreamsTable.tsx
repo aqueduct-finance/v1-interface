@@ -54,7 +54,7 @@ const StreamsTable = () => {
                         chainId,
                     });
 
-                    if (!token0 || !token1) {return}
+                    if (!token0 || !token1) { return }
 
                     // batch call: get flows for both
                     const [flowParams0, flowParams1] = await Promise.all([
@@ -88,6 +88,8 @@ const StreamsTable = () => {
                     }
                 })
             );
+
+            console.log(newData)
 
             setData(newData);
             setLinks(newLinks);

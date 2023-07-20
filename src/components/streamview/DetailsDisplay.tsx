@@ -29,13 +29,13 @@ const DetailsDisplay = ({
     const actualEndDate = endDate === undefined ? "Not Scheduled" : startDate?.toLocaleDateString() + "\u00A0\u00A0\u00A0" + startDate?.toLocaleTimeString();
     const streamData = [
         { title: "Start Date: ", data: startDate?.toLocaleDateString() + "\u00A0\u00A0\u00A0" + startDate?.toLocaleTimeString() },
-        { title: "End Date: ", data: actualEndDate },
+        { title: "End Date: ", data: "Not Scheduled" },
         { title: `${token0?.symbol} Flowrate: `, data: "-" + parseFloat(ethers.utils.formatEther(flowrate0)).toFixed(11) + "\u00A0" + " / " + "\u00A0" + "sec" },
         { title: "Data: ", data: `${superfluidDashboardLink.slice(8, 12)}...${superfluidDashboardLink.slice(-4)}`, link: superfluidDashboardLink },
     ]
 
     return (
-        <div className='w-full h-full rounded-l-[1.4rem] rounded-r-xl bg-item text-white flex flex-col items-start justify-start px-6 py-4'>
+        <div className='max-w-xl w-full h-full md:rounded-l-xl md:rounded-r-[1.4rem] rounded-xl bg-item text-white flex flex-col items-start justify-start px-6 py-4'>
             <h1 className='font-medium text-accentText'>
                 Details
             </h1>

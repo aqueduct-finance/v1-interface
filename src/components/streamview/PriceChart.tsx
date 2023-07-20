@@ -1,5 +1,5 @@
 import React, { MutableRefObject } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, Label, ResponsiveContainer } from 'recharts';
 import { TokenTypes } from "../../types/TokenOption";
 import { PriceHistory } from "../../types/PriceHistory";
 import PairTitle from "./PairTitle";
@@ -54,47 +54,52 @@ const PriceChart = ({
     const swapStartDisplay = 100 - ((priceHistory.length - actualEntry - 1) / (priceHistory.length - 1)) * 100;
 
     return (
-        <div className={`flex items-start justify-center flex-col py-12 pl-5 mt-10 ${loading ? 'animate-pulse' : ''}`}>
+        <div className={`flex items-start justify-center flex-col py-8 sm:pl-5 pl-0 mt-5 ${loading ? 'animate-pulse' : ''}`}>
             <PairTitle
                 token0={token0}
                 token1={token1}
                 currentPrice={currentPrice}
                 period={period}
             />
-            <LineChart
-                width={800}
+            <ResponsiveContainer
+                width="90%"
                 height={400}
-                data={priceHistory}
-                margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
             >
-                <defs>
-                    <linearGradient id="graph" x1="0" y1="0" x2="100%" y2="0">
-                        <stop offset="0%" stopColor="#17203D" />
-                        <stop offset={`${swapStartDisplay}%`} stopColor="#17203D" />
-                        <stop offset={`${swapStartDisplay}%`} stopColor="#5783F3" />
-                        <stop offset="100%" stopColor="#5783F3" />
-                    </linearGradient>
-                </defs>
-                <Line type={type} dataKey="token0Price" stroke={`${swapStartDisplay === Infinity ? "#5783F3" : "url(#graph)"}`} dot={false} strokeWidth="2px" />
-                {entry && (
-                    <ReferenceLine
-                        x={actualEntry}
-                        stroke="rgb(255 255 255 / 0.15)"
-                        strokeWidth="2px"
-                        strokeDasharray="3 3"
-                    >
-                        <Label
+                <LineChart
+                    width={800}
+                    height={400}
+                    data={priceHistory}
+                    margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                >
+                    <defs>
+                        <linearGradient id="graph" x1="0" y1="0" x2="100%" y2="0">
+                            <stop offset="0%" stopColor="#17203D" />
+                            <stop offset={`${swapStartDisplay}%`} stopColor="#17203D" />
+                            <stop offset={`${swapStartDisplay}%`} stopColor="#5783F3" />
+                            <stop offset="100%" stopColor="#5783F3" />
+                        </linearGradient>
+                    </defs>
+                    <Line type={type} dataKey="token0Price" stroke={`${swapStartDisplay === Infinity ? "#5783F3" : "url(#graph)"}`} dot={false} strokeWidth="2px" />
+                    {entry && (
+                        <ReferenceLine
+                            x={actualEntry}
                             stroke="rgb(255 255 255 / 0.15)"
-                            value="Entry"
-                            position="bottom"
-                            offset={10}
-                        />
-                    </ReferenceLine>
-                )}
-                <XAxis dataKey="blockTimestamp.getTime()" axisLine={false} tickLine={false} tick={false} />
-                <YAxis domain={[minPrice - minExtra, maxPrice + maxExtra]} axisLine={false} tickLine={false} tick={false} />
-                <Tooltip content={<CustomTooltip payload={undefined} token1={token1} />} />
-            </LineChart>
+                            strokeWidth="2px"
+                            strokeDasharray="3 3"
+                        >
+                            <Label
+                                stroke="rgb(255 255 255 / 0.15)"
+                                value="Entry"
+                                position="bottom"
+                                offset={10}
+                            />
+                        </ReferenceLine>
+                    )}
+                    <XAxis dataKey="blockTimestamp.getTime()" axisLine={false} tickLine={false} tick={false} />
+                    <YAxis domain={[minPrice - minExtra, maxPrice + maxExtra]} axisLine={false} tickLine={false} tick={false} />
+                    <Tooltip content={<CustomTooltip payload={undefined} token1={token1} />} />
+                </LineChart>
+            </ResponsiveContainer>
         </div>
     )
 }

@@ -476,7 +476,7 @@ const PoolInteractionVisualization: NextPage = () => {
                     className={`w-full max-w-4xl space-y-4 mx-4 md:mx-8 pb-12 ${isLoading ? "opacity-" : ""
                         }`}
                 >
-                    <div className="text-2xl text-white/50 hover:text-white transition-all duration-300 rounded-2xl bg-item px-3 py-2 w-min">
+                    <div className="text-2xl text-white/50 hover:text-white transition-all duration-300 rounded-2xl bg-item px-3 py-2 w-min mt-5">
                         <Link href="/">
                             <IoArrowBack />
                         </Link>

@@ -48,9 +48,9 @@ const WidgetContainer = ({
             }`}
     >
         {(title || smallTitle || buttons) && (
-            <div className="flex font-bold space-x-4 text-2xl whitespace-nowrap p-4">
+            <div className="flex font-bold space-x-4 sm:text-2xl text-lg whitespace-nowrap p-4">
                 {title && (
-                    <div className="px-0 py-2 rounded-xl  w-min text-white">
+                    <div className="px-0 py-2 rounded-xl w-min text-white">
                         {title}
                     </div>
                 )}
@@ -69,7 +69,7 @@ const WidgetContainer = ({
                         </button>
                     ))}
                 {!title && !buttons && (
-                    <div className="pl-1 pr-4 flex items-center rounded-xl text-lg font-semibold w-min text-white">
+                    <div className="pl-1 pr-4 flex items-center rounded-xl sm:text-lg text-sm font-semibold w-min text-white">
                         {smallTitle}
                     </div>
                 )}
@@ -94,7 +94,7 @@ const WidgetContainer = ({
                                         }
                                         className=" bg-aqueductBlue/20 flex items-center justify-center text-aqueductBlue p-2 rounded-xl hover:bg-aqueductBlue/75 hover:text-black transition-all duration-300"
                                     >
-                                        <RiPencilFill size={25} />
+                                        <RiPencilFill className="md:text-3xl sm:text-lg text-sm" />
                                     </a>
                                 </Link>
                             }
@@ -116,7 +116,7 @@ const WidgetContainer = ({
                                             <LoadingSpinner size={25} />
                                         </div>
                                     ) : (
-                                        <RiCloseCircleFill size={25} />
+                                        <RiCloseCircleFill className="md:text-3xl sm:text-lg text-sm" />
                                     )}
                                 </button>
                             }

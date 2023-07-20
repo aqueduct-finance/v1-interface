@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { IoClose, IoMenu } from "react-icons/io5";
 import { ConnectKitButton } from "connectkit";
 import NavOption from "./NavOption";
+import NavLink from "./NavLink";
 
 declare global {
     interface Window {
@@ -65,10 +66,27 @@ function NavBar() {
                             {isOpen ? <IoClose size={28} /> : <IoMenu size={28} />}
                         </button>
                     </div>
+                </div>
+                <div
+                    className={`${isOpen ? "flex flex-col space-y-4 pt-4" : "hidden"
+                        } md:flex md:flex-row md:space-y-0 md:pt-0 md:space-x-3`}
+                >
                     <div
-                        className={`${isOpen ? "flex flex-col space-y-4 pt-4" : "hidden"
-                            } md:flex md:flex-row md:space-y-0 md:pt-0 md:space-x-3`}
+                        className="rounded-2xl bg-item md:hidden flex-col items-center justify-center p-2 space-y-1"
                     >
+                        <NavLink
+                            title="My Swaps"
+                            link="/my-swaps"
+                        />
+                        <NavLink
+                            title="Swap"
+                            link="/"
+                        />
+                        <div className="w-full flex items-center justify-center p-2">
+                            <ConnectKitButton />
+                        </div>
+                    </div>
+                    <div className="w-full md:flex hidden items-center justify-center p-2">
                         <ConnectKitButton />
                     </div>
                 </div>

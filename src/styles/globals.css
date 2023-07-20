@@ -25,10 +25,8 @@ html {
   }
 
   .pixel-blur {
-    background-image: radial-gradient(
-      #00000033 0.05rem,
-      #00000066 1px
-    );
+    background-image: radial-gradient(#00000033 0.05rem,
+        #00000066 1px);
     background-size: 4px 4px;
     backdrop-filter: blur(15px);
   }

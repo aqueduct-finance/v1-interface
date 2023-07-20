@@ -33,7 +33,7 @@ const DetailRow = ({
     }
 
     return (
-        <div className='w-full flex flex-row items-start space-x-4 text-sm'>
+        <div className='flex flex-row items-start space-x-4 text-sm'>
             <p className='text-accentText text-xs'>
                 {title}
             </p>

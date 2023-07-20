@@ -35,7 +35,7 @@ const PairTitle = ({
 }: PairTitleProps) => (
     <div className="w-full">
         {token0 && token1 && (
-            <div className="flex flex-row justify-between items-end">
+            <div className="flex flex-row justify-between items-end flex-wrap">
                 <div className="flex flex-col ml-8 space-y-3">
                     <div className="flex flex-row justify-center items-center">
                         <div className="flex items-center justify-center text-4xl pl-4 space-x-3 font-semibold">
@@ -44,7 +44,7 @@ const PairTitle = ({
                             <p>{token1.underlyingToken?.symbol}</p>
                         </div>
                         <div className="ml-5 flex flex-row">
-                            <div className="-mr-3 rounded black-shadow drop z-10">
+                            <div className="-mr-3 rounded black-shadow drop z-10 ">
                                 <Image src={token0.logoURI} width="30" height="30" alt={token0.name} />
                             </div>
                             <div className="rounded drop-shadow-lg">
@@ -64,7 +64,7 @@ const PairTitle = ({
                         </p>
                     </div>
                 </div>
-                <div className="flex mr-12 p-1 space-x-1">
+                <div className="flex mr-12 p-1 ml-9 mt-6 sm:mt-0 sm:ml-0 space-x-1">
                     {timeArray.map((item, i) => (
                         <div className={`${period.current === item.text ? "bg-item text-white" : "bg-transparent text-white/50"} py-1 px-1 flex items-center justify-center rounded-xl w-[40px] cursor-pointer duration-100 ease-in-out`}
                             key={i}
