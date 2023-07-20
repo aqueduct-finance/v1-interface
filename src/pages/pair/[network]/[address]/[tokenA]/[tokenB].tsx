@@ -376,7 +376,7 @@ const PoolInteractionVisualization: NextPage = () => {
     const minDifferenceRef = useRef(Infinity);
     const closestDateRef = useRef<number | null>(null);
     const [loading, setLoading] = useState(true);
-    const periodSelect = useRef<string>('1W');
+    const periodSelect = useRef<string>('1M');
 
     useEffect(() => {
         if (data !== undefined) {
