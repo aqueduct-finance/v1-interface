@@ -477,7 +477,7 @@ const PoolInteractionVisualization: NextPage = () => {
                         }`}
                 >
                     <div className="text-2xl text-white/50 hover:text-white transition-all duration-300 rounded-2xl bg-item px-3 py-2 w-min mt-5">
-                        <Link href="/">
+                        <Link href="/my-swaps">
                             <IoArrowBack />
                         </Link>
                     </div>
