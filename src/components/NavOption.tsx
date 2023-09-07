@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 
 interface NavOptionProps {
     options: NavItem;
+    expand?: boolean;
 }
 
 const NavOption = ({
     options,
+    expand
 }: NavOptionProps) => {
     const router = useRouter()
 
@@ -19,7 +21,7 @@ const NavOption = ({
 
     return (
         <button
-            className="rounded-xl whitespace-nowrap"
+            className={`flex rounded-xl whitespace-nowrap min-w-[8rem] ${expand ? 'grow' : ''}`}
             style={{ flex: "1 1 0px" }}
             onClick={() => {
                 handleNavClick();
