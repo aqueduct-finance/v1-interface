@@ -1,6 +1,3 @@
 [submodule "widget"]
 	path = widget
 	url = https://github.com/aqueduct-finance/widget.git
-[submodule "src/components/widgets/swap"]
-	path = src/components/widgets/swap
-	url = https://github.com/aqueduct-finance/widget.git

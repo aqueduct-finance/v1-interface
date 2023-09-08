@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "cd src/components/widgets/swap && yarn"
+    "lint": "next lint"
   },
   "dependencies": {
     "@apollo/client": "^3.7.16",
