@@ -36,12 +36,12 @@ function NavBar() {
                         <img
                             src="/aqueduct-logo.png"
                             alt="Aqueduct logo"
-                            className="w-10 h-10 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl"
+                            className="w-8 h-8 object-contain lg:w-9 lg:h-9 rounded-lg lg:rounded-xl"
                         />
                         <h1
-                            className="text-2xl font-semibold px-2 poppins-font"
+                            className="text-3xl px-2 lg:px-2 garamond-font text-white tracking-tight"
                         >
-                            aqueduct
+                            Aqueduct
                         </h1>
                         <div className="w-full" />
                         <div
