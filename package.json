@@ -12,7 +12,7 @@
     "@apollo/client": "^3.7.16",
     "@superfluid-finance/sdk-core": "^0.6.6",
     "apollo-boost": "^0.4.9",
-    "aqueduct-widget": "^0.5.0",
+    "aqueduct-widget": "^0.5.57",
     "axios": "^1.4.0",
     "connectkit": "^1.4.0",
     "ethereum-blockies-base64": "^1.0.2",

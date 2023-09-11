@@ -73,7 +73,7 @@ const StreamsTable = () => {
                             { token0, token1 },
                         ]);
                         newLinks.push(
-                            `pair/goerli/${address}/${token0.address}/${token1.address}`
+                            `pair/mumbai/${address}/${token0.address}/${token1.address}`
                         );
                     } else if (decodedFlowParams1.flowRate !== "0") {
                         const date = new Date(Number(decodedFlowParams1.timestamp) * 1000);
@@ -83,7 +83,7 @@ const StreamsTable = () => {
                             { token0, token1 },
                         ]);
                         newLinks.push(
-                            `pair/goerli/${address}/${token0.address}/${token1.address}`
+                            `pair/mumbai/${address}/${token0.address}/${token1.address}`
                         );
                     }
                 })
