@@ -30,8 +30,8 @@ const NavOption = ({
             <div
                 className={`${router.asPath
                     === options.page ?
-                    "bg-highlightedItem text-white" : "bg-transparent text-accentText"} 
-                w-full flex items-center justify-center rounded-2xl px-3 py-2 font-semibold`}>
+                    "2bg-highlightedItem bg-white/5 text-white border-[1px] border-white/5 rounded-xl" : "bg-transparent border-0 border-transparent text-accentText"} 
+                w-full flex items-center justify-center 2rounded-2xl px-12 py-3 font-semibold neuehaas-font hover:text-white transition-all duration-300`}>
                 <h1>
                     {options.label}
                 </h1>

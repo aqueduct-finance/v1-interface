@@ -376,7 +376,7 @@ const PoolInteractionVisualization: NextPage = () => {
     const minDifferenceRef = useRef(Infinity);
     const closestDateRef = useRef<number | null>(null);
     const [loading, setLoading] = useState(true);
-    const periodSelect = useRef<string>('1M');
+    const periodSelect = useRef<string>('1Y');
 
     useEffect(() => {
         if (data !== undefined) {
@@ -470,13 +470,13 @@ const PoolInteractionVisualization: NextPage = () => {
     }, [data, startDate, periodSelect.current]);
 
     return (
-        <div className="flex justify-center w-full">
+        <div className="flex justify-center w-full pb-24 md:py-24 overflow-hidden">
             {isLoading || (!isLoading && positionFound) ? (
                 <div
                     className={`w-full max-w-4xl space-y-4 mx-4 md:mx-8 pb-12 ${isLoading ? "opacity-" : ""
                         }`}
                 >
-                    <div className="text-2xl text-white/50 hover:text-white transition-all duration-300 rounded-2xl bg-item px-3 py-2 w-min mt-5">
+                    <div className="text-2xl text-white/50 hover:text-white transition-all duration-300 rounded-2xl bg-white/5 px-3 py-2 w-min mt-5">
                         <Link href="/my-swaps">
                             <IoArrowBack />
                         </Link>
@@ -522,58 +522,6 @@ const PoolInteractionVisualization: NextPage = () => {
                                     price={averagePrice}
                                 />
                             </WidgetContainer>
-                            { /* // Do we want share buttons???????
-                            <div className="flex items-center space-x-2 md:px-8 md:pt-2">
-                                <p className="pr-2">Share:</p>
-                                <ButtonWithInfoPopup
-                                    message="Copy link"
-                                    button={
-                                        <button
-                                            type="button"
-                                            className="p-2 bg-aqueductBlue rounded-xl text-white"
-                                            onClick={() => {
-                                                if (address) {
-                                                    navigator.clipboard.writeText(
-                                                        getSharedLink(
-                                                            "goerli",
-                                                            address,
-                                                            token0!.address,
-                                                            token1!.address
-                                                        )
-                                                    );
-                                                }
-                                            }}
-                                        >
-                                            <BiLink size={22} />
-                                        </button>
-                                    }
-                                />
-                                <ButtonWithInfoPopup
-                                    message="Share on Twitter"
-                                    button={
-                                        <a
-                                            className="p-2 bg-[#1DA1F2] rounded-xl text-white"
-                                            href={
-                                                address
-                                                    ? getTweetTemplate(
-                                                        getSharedLink(
-                                                            "goerli",
-                                                            address,
-                                                            token0!.address,
-                                                            token1!.address
-                                                        )
-                                                    )
-                                                    : ""
-                                            }
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            <IoLogoTwitter size={22} />
-                                        </a>
-                                    }
-                                />
-                            </div>
-                                */}
                         </div>
                     )}
                 </div>

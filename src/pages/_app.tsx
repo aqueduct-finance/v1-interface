@@ -32,13 +32,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   });
 
   return (
-    <div className='flex flex-col min-h-screen bg-black text-white 2overflow-x-hidden poppins-font'>
+    <div className='flex flex-col min-h-screen bg-[#0F172D] text-white neuehaas-roman-font'>
       <ApolloProvider client={client}>
         <WagmiConfig config={config}>
           <ConnectKitProvider
             customTheme={{
               "--ck-overlay-backdrop-filter": "blur(10px)",
-              "--ck-font-family": `"Poppins", sans-serif`,
+              "--ck-font-family": `"Neue Haas Grotesk Display Pro Roman", sans-serif`,
               "--ck-connectbutton-font-weight": '600',
               "--ck-connectbutton-background": "#272727"
             }}

@@ -108,7 +108,7 @@ const StreamsTable = () => {
                     columnProps={[
                         "min-w-[14rem] w-full max-w-[20rem]",
                         "min-w-[7rem] w-full max-w-[16rem]",
-                        "min-w-[14rem] w-full max-w-[20rem] hidden lg:flex",
+                        "min-w-[14rem] w-full max-w-[25rem] hidden lg:flex",
                     ]}
                     columnComponents={[PoolField, TextField, BalancesField]}
                     rowLinks={links}

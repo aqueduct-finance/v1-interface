@@ -3,6 +3,7 @@ import { CgArrowsExpandRight } from "react-icons/cg";
 import Link from "next/link";
 import { useMemo } from "react";
 import { ExplicitAny } from "../../types/ExplicitAny";
+import theme from "../../styles/theme";
 
 interface TableRowProps {
     columnProps: string[];
@@ -21,8 +22,13 @@ const TableRow = ({
     return (
         <Link href={link} data-test-id="table-row-link">
             <div
-                className="relative flex p-4 items-center bg-item rounded-2xl hover:border-[#262626] border-2 border-transparent cursor-pointer transition-all duration-300"
+                className="relative flex p-4 items-center rounded-2xl hover:scale-[1.005] border-2 border-transparent cursor-pointer transition-all duration-300"
                 aria-label="Table row"
+                style={{
+                    background: theme.tokenBox,
+                    borderRadius: theme.secondaryBorderRadius,
+                    color: theme.primaryText,
+                }}
             >
                 {data.map((d, i) => (
                     // TODO: don't use index as key

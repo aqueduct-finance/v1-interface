@@ -72,7 +72,7 @@ const TotalAmountsStreamedWidget = ({
                     />
                 )}
             </div>
-            <div className="w-full flex sm:flex-nowrap flex-wrap 2grid 2grid-cols-2 2gap-2 sm:space-x-2 space-x-0 space-y-2 md:space-y-0"
+            <div className="w-full flex sm:flex-nowrap flex-wrap 2grid 2grid-cols-2 2gap-2 sm:space-x-2 space-x-0 space-y-2 sm:space-y-0"
             >
                 <DetailsDisplay
                     startDate={startDate}
