@@ -16,7 +16,7 @@ interface PriceHistoryProps {
 
 const CustomTooltip = ({ payload, token1 }: { payload: any, token1: TokenTypes | undefined }) => {
     return (
-        <div className="bg-item rounded-xl">
+        <div className="bg-white/5 rounded-xl">
             <div>
                 {payload?.map((pld: { fill: any; value: number; }, index: number) => (
                     // eslint-disable-next-line react/jsx-key

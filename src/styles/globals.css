@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Red+Hat+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro');
 
 @tailwind base;
 @tailwind components;
@@ -20,6 +21,16 @@ html {
 }
 
 @layer components {
+  .test-1234 {
+      backdrop-filter: blur(2px);
+      mask: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 50%,
+      rgba(0, 0, 0, 1) 50%,
+      rgba(0, 0, 0, 0) 100%
+      );
+  }
 
   .black-shadow {
     filter: drop-shadow(5px 0px 15px black);
@@ -60,8 +71,28 @@ html {
     box-shadow: 0px 0px 35px rgba(215, 215, 215);
   }
 
+  .roboto-font {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .inter-font {
+    font-family: "Inter", sans-serif;
+  }
+
+  .worksans-font {
+    font-family: 'Work Sans', sans-serif;
+  }
+
   .poppins-font {
     font-family: "Poppins", sans-serif;
+  }
+
+  .neuehaas-font {
+    font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+  }
+
+  .neuehaas-roman-font {
+    font-family: 'Neue Haas Grotesk Display Pro Roman', sans-serif;
   }
 
   .garamond-font {
@@ -78,6 +109,10 @@ html {
 
   .bg-50 {
     background-size: 50%;
+  }
+
+  .widget-shadow {
+    filter: drop-shadow(0px 0px 5px #00000050) drop-shadow(0px 0px 50px #000000);
   }
 
   .glow-pink-xs {

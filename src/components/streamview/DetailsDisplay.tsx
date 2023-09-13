@@ -35,7 +35,7 @@ const DetailsDisplay = ({
     ]
 
     return (
-        <div className='max-w-xl w-full h-full md:rounded-l-xl md:rounded-r-[1.4rem] rounded-xl bg-item text-white flex flex-col items-start justify-start px-6 py-4'>
+        <div className='max-w-xl w-full h-full rounded-2xl md:rounded-bl-[2.4rem] bg-white/5 text-white flex flex-col items-start justify-start px-8 py-6'>
             <h1 className='font-medium text-accentText'>
                 Details
             </h1>

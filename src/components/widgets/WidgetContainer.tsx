@@ -2,6 +2,7 @@ import Link from "next/link";
 import { RiCloseCircleFill, RiPencilFill } from "react-icons/ri";
 import LoadingSpinner from "../LoadingSpinner";
 import ButtonWithInfoPopup from "../ButtonInfoPopup";
+import theme from "../../styles/theme";
 
 /* eslint-disable react/require-default-props */
 type ButtonProps = {
@@ -44,13 +45,30 @@ const WidgetContainer = ({
     padding
 }: WidgetContainerProps) => (
     <div
-        className={`poppins-font flex flex-col w-full ${padding} space-y-6 rounded-[2rem] md:bg-black dark:md:border-gray-800/60 dark:md:bg-gray-900/60 md:border-[2px] border-[#262626] transition ${!isUnbounded && "  max-w-xl "
-            }`}
+        className={
+            `flex flex-col w-full ${padding} space-y-6 bg-transparent md:bg-current border-none md:border-solid transition md:shadow-2xl ${!isUnbounded && "  max-w-xl "
+        }`}
+        style={
+            {
+                borderColor: theme.borderColor,
+                borderWidth: theme.primaryBorderWidth,
+                borderRadius: theme.primaryBorderRadius,
+                color: theme.bgColor
+            }
+        }
     >
         {(title || smallTitle || buttons) && (
-            <div className="flex font-bold space-x-4 sm:text-2xl text-lg whitespace-nowrap p-4">
+            <div 
+                className="flex space-x-4 whitespace-nowrap text-xl p-4"
+            >
                 {title && (
-                    <div className="px-0 py-2 rounded-xl w-min text-white">
+                    <div 
+                        className="px-0 py-2 rounded-xl w-min"
+                        style={{
+                            fontWeight: theme.primaryFontWeight,
+                            color: theme.primaryText
+                        }}
+                    >
                         {title}
                     </div>
                 )}
@@ -92,9 +110,9 @@ const WidgetContainer = ({
                                         onClick={() =>
                                             setOutboundAndInboundTokens()
                                         }
-                                        className=" bg-aqueductBlue/20 flex items-center justify-center text-aqueductBlue p-2 rounded-xl hover:bg-aqueductBlue/75 hover:text-black transition-all duration-300"
+                                        className=" bg-aqueductBlue/10 flex items-center justify-center text-aqueductBlue/50 hover:text-aqueductBlue p-2 rounded-xl hover:bg-aqueductBlue/20 hover:text-black transition-all duration-300"
                                     >
-                                        <RiPencilFill className="md:text-3xl sm:text-lg text-sm" />
+                                        <RiPencilFill className="md:text-2xl sm:text-lg text-sm" />
                                     </a>
                                 </Link>
                             }
@@ -107,7 +125,7 @@ const WidgetContainer = ({
                                 <button
                                     type="button"
                                     onClick={() => cancelStream()}
-                                    className="bg-red-500/30 text-red-600 p-2 rounded-xl hover:bg-red-500/75 hover:text-black transition-all duration-300"
+                                    className="bg-red-500/10 text-red-600/50 p-2 rounded-xl hover:text-red-600 hover:bg-red-500/20 2hover:text-black transition-all duration-300"
                                     disabled={isLoading || isDeleting}
                                     aria-label="Delete stream button"
                                 >
@@ -116,7 +134,7 @@ const WidgetContainer = ({
                                             <LoadingSpinner size={25} />
                                         </div>
                                     ) : (
-                                        <RiCloseCircleFill className="md:text-3xl sm:text-lg text-sm" />
+                                        <RiCloseCircleFill className="md:text-2xl sm:text-lg text-sm" />
                                     )}
                                 </button>
                             }

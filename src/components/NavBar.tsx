@@ -3,6 +3,7 @@ import { IoClose, IoMenu } from "react-icons/io5";
 import { ConnectKitButton } from "connectkit";
 import NavOption from "./NavOption";
 import NavLink from "./NavLink";
+import theme from "../styles/theme";
 
 declare global {
     interface Window {
@@ -27,9 +28,9 @@ function NavBar() {
 
     return (
         <>
-            <div className="w-full flex justify-center sticky top-0 z-50 backdrop-blur-xl pixel-blur">
+            <div className="w-full flex justify-center sticky top-0 z-50 backdrop-blur-xl 2pixel-blur bg-black/20">
                 <div
-                    className={`max-w-screen-2xl flex w-full text-aqueductBlue p-4 lg:px-8 items-center justify-between lg:pt-6 lg:pb-4 overflow-hidden`}
+                    className={`max-w-screen-2xl flex w-full items-center justify-between px-4 py-2 md:px-6 md:pt-4 md:pb-2 lg:px-8 lg:pt-6 lg:pb-4 overflow-hidden`}
                 >
                     
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -45,7 +46,7 @@ function NavBar() {
                         </h1>
                         <div className="w-full" />
                         <div
-                            className="rounded-3xl bg-item md:flex flex-row hidden items-center justify-center p-2 space-x-2"
+                            className="rounded-xl 2bg-item bg-white/ md:flex flex-row hidden items-center justify-center"
                         >
                             {navItems.map((item, i) => (
                                 <NavOption
@@ -56,50 +57,16 @@ function NavBar() {
                         </div>
                         <div className="w-full" />
                         <ConnectKitButton />
-                        {/*<div className="flex grow" />
-                        <div className="md:hidden mt-[3px]">
-                            <button
-                                type="button"
-                                className="md:hidden mb-[3px]"
-                                onClick={() => {
-                                    setIsOpen(!isOpen);
-                                }}
-                            >
-                                {isOpen ? <IoClose size={28} /> : <IoMenu size={28} />}
-                            </button>
-                            </div>*/}
-                    
-                    {/*
-                    <div
-                        className={`${isOpen ? "flex flex-col space-y-4 pt-4" : "hidden"
-                            } md:flex md:flex-row md:space-y-0 md:pt-0 md:space-x-3`}
-                    >
-                        <div
-                            className="rounded-2xl bg-item md:hidden flex-col items-center justify-center p-2 space-y-1"
-                        >
-                            <NavLink
-                                title="My Swaps"
-                                link="/my-swaps"
-                            />
-                            <NavLink
-                                title="Swap"
-                                link="/"
-                            />
-                            <div className="w-full flex items-center justify-center p-2">
-                                <ConnectKitButton />
-                            </div>
-                        </div>
-                        <div className="w-full md:flex hidden items-center justify-center p-2">
-                            <ConnectKitButton />
-                        </div>
-                    </div>
-                        */}
-                    
                 </div>
             </div>
 
             {/* Display a bottom-aligned tab bar on mobile */}
-            <div className="md:hidden fixed bottom-2 left-2 right-2 h-14 p-2 flex flex-row items-center justify-center space-x-2 z-50 backdrop-blur-xl pixel-blur bg-item/75 rounded-3xl">
+            <div 
+                className="md:hidden fixed bottom-2 left-2 right-2 h-14 p-1 flex flex-row items-center justify-center space-x-2 z-50 backdrop-blur-3xl rounded-2xl"
+                style={{
+                    backgroundColor: theme.bgColor
+                }}
+            >
                 {navItems.map((item, i) => (
                     <NavOption
                         expand

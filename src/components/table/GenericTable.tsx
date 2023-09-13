@@ -2,6 +2,7 @@
 import { ExplicitAny } from "../../types/ExplicitAny";
 import WidgetContainer from "../widgets/WidgetContainer";
 import TableRow from "./TableRow";
+import theme from "../../styles/theme";
 
 interface GenericTableProps {
     title: string;
@@ -24,10 +25,17 @@ const GenericTable = ({
     isLoading,
     noDataMessage,
 }: GenericTableProps) => (
-    <WidgetContainer padding="md:p-4" title={title} isUnbounded>
-        <div className="flex px-4 text-xl text-white font-semibold">
+    <WidgetContainer padding="md:p-5 md:pb-8" title={title} isUnbounded>
+        <div className="flex px-4 text-white font-semibold">
             {labels.map((label, i) => (
-                <div className={columnProps[i]} key={label}>
+                <div 
+                    className={columnProps[i]} 
+                    key={label}
+                    style={{
+                        fontWeight: theme.secondaryFontWeight,
+                        color: theme.accentText
+                    }}
+                >
                     {label}
                 </div>
             ))}
@@ -36,8 +44,12 @@ const GenericTable = ({
             <div className="flex flex-col space-y-2">
                 {[0, 1, 2].map((i) => (
                     <div
-                        className="w-full p-4 text-transparent bg-item dark:bg-aqueductBlue/30 rounded-2xl animate-pulse"
+                        className={`w-full p-4 text-transparent animate-pulse`}
                         key={`loading-${i}`}
+                        style={{
+                            background: theme.tokenBox,
+                            borderRadius: theme.secondaryBorderRadius
+                        }}
                     >
                         -
                     </div>
