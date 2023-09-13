@@ -3423,10 +3423,10 @@ apollo-utilities@1.3.4, apollo-utilities@^1.3.0, apollo-utilities@^1.3.4:
     ts-invariant "^0.4.0"
     tslib "^1.10.0"
 
-aqueduct-widget@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/aqueduct-widget/-/aqueduct-widget-0.6.0.tgz#dd3f44e856761e307172235322595fd6b5dc3b46"
-  integrity sha512-3yzk8fHy70ib2RPDFYWb8FWi6stpBYd2W0va87Q6v2QVaVjfAqIRQldAqhcWJjutJmDFlTTIzRx83blzJg9yNA==
+aqueduct-widget@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/aqueduct-widget/-/aqueduct-widget-0.6.1.tgz#05b2f940669dfdb0e8b9bfda82a057603fb19023"
+  integrity sha512-DVBwHRBm77xA7C4UrDPfRsOoO5iHF4b34VDCqbHcPYE9NbLthD8eN1bm/bzqhs/5e7bowumdyJ3JkeJ0O4Wzwg==
   dependencies:
     "@babel/core" "^7.22.1"
     "@babel/plugin-transform-runtime" "^7.22.4"
