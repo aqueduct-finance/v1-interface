@@ -3,10 +3,11 @@ import type { AppProps } from "next/app";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { WagmiConfig, createConfig } from "wagmi";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
-import { goerli } from "wagmi/chains";
-import NavBar from "../components/NavBar";
+import { polygonMumbai } from "wagmi/chains";
+import NavBar from '../components/NavBar';
+import { createPublicClient, http } from 'viem';
 
-const chains = [goerli];
+const chains = [polygonMumbai]
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -16,27 +17,34 @@ function MyApp({ Component, pageProps }: AppProps) {
     getDefaultConfig({
       alchemyId: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
       walletConnectProjectId: walletConnectProjectId,
-
+      /*publicClient: createPublicClient({
+        chain: polygonMumbai,
+        transport: http()
+      }),*/
       appName: "Aqueduct",
       chains
     }),
   );
 
   const client = new ApolloClient({
-    uri: 'https://api.studio.thegraph.com/query/49133/aqueduct/version/latest',
+    uri: 'https://api.studio.thegraph.com/query/49133/aqueductsubgraph/version/latest',
     cache: new InMemoryCache(),
   });
 
-
   return (
-    <div className='flex flex-col min-h-screen bg-black text-white overflow-x-hidden'>
+    <div className='flex flex-col min-h-screen bg-[#0F172D] text-white neuehaas-roman-font'>
       <ApolloProvider client={client}>
         <WagmiConfig config={config}>
-          <ConnectKitProvider>
-            <div>
-              <NavBar />
-            </div>
-            <div className='flex flex-grow items-center justify-center'>
+          <ConnectKitProvider
+            customTheme={{
+              "--ck-overlay-backdrop-filter": "blur(10px)",
+              "--ck-font-family": `"Neue Haas Grotesk Display Pro Roman", sans-serif`,
+              "--ck-connectbutton-font-weight": '600',
+              "--ck-connectbutton-background": "#272727"
+            }}
+          >
+            <NavBar />
+            <div className='flex flex-grow md:items-center justify-center'>
               <Component {...pageProps} />
             </div>
           </ConnectKitProvider>

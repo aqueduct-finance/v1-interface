@@ -2,6 +2,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    mode: 'jit',
     darkMode: ["class"],
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx}",
@@ -21,6 +22,7 @@ module.exports = {
                 ethPink: "#E7018A",
                 item: "#121212",
                 accentText: "rgb(255 255 255 / 0.5)",
+                highlightedItem: "#272727"
             },
             screens: {
                 xs: "475px",

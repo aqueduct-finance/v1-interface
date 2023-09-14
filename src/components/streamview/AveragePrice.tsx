@@ -12,11 +12,11 @@ const AveragePrice = ({
     token1,
     price
 }: AveragePriceProps) => (
-    <div className='w-full h-full rounded-xl bg-item text-accentText font-semibold flex flex-col items-start justify-start px-6 py-4'>
-        <h1 className='font-semibold text-lg'>
+    <div className='max-w-xl w-full grow rounded-2xl md:rounded-br-[2.4rem] bg-white/5 text-accentText font-semibold flex flex-col items-start justify-start px-8 py-6'>
+        <h1 className='font-medium'>
             Average Price
         </h1>
-        <div className='space-y-3 mt-6 text-4xl'>
+        <div className='flex flex-col grow justify-end sm:text-3xl text-lg space-y-1 text-white/80'>
             <h1>
                 1 {token0.underlyingToken?.symbol}
             </h1>

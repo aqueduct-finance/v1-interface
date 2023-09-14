@@ -1,8 +1,8 @@
-
 import Link from "next/link";
 import { RiCloseCircleFill, RiPencilFill } from "react-icons/ri";
 import LoadingSpinner from "../LoadingSpinner";
 import ButtonWithInfoPopup from "../ButtonInfoPopup";
+import theme from "../../styles/theme";
 
 /* eslint-disable react/require-default-props */
 type ButtonProps = {
@@ -12,7 +12,9 @@ type ButtonProps = {
 };
 
 interface WidgetContainerProps {
-    title: string;
+    title?: string;
+    smallTitle?: string;
+    buttons?: ButtonProps[];
     children: React.ReactNode;
     isUnbounded?: boolean;
     userAddress?: string | undefined
@@ -23,10 +25,13 @@ interface WidgetContainerProps {
     isDeleting?: boolean;
     setOutboundAndInboundTokens?: () => void;
     cancelStream?: () => void;
+    padding?: string;
 }
 
-function WidgetContainer({
+const WidgetContainer = ({
     title,
+    smallTitle,
+    buttons,
     children,
     isUnbounded,
     userAddress,
@@ -36,15 +41,34 @@ function WidgetContainer({
     isLoading,
     isDeleting,
     setOutboundAndInboundTokens,
-    cancelStream
+    cancelStream,
+    padding
 }: WidgetContainerProps) => (
     <div
-        className={`flex flex-col w-full md:p-6 space-y-6 rounded-3xl md:bg-black dark:md:border-gray-800/60 dark:md:bg-gray-900/60 border-[2px] border-[#262626] transition ${!isUnbounded && "  max-w-xl "
-            }`}
-        >
-            <div className="flex font-bold space-x-4 text-2xl whitespace-nowrap">
+        className={
+            `flex flex-col w-full ${padding} space-y-6 bg-transparent md:bg-current border-none md:border-solid transition md:shadow-2xl ${!isUnbounded && "  max-w-xl "
+        }`}
+        style={
+            {
+                borderColor: theme.borderColor,
+                borderWidth: theme.primaryBorderWidth,
+                borderRadius: theme.primaryBorderRadius,
+                color: theme.bgColor
+            }
+        }
+    >
+        {(title || smallTitle || buttons) && (
+            <div 
+                className="flex space-x-4 whitespace-nowrap text-xl p-4"
+            >
                 {title && (
-                    <div className="px-2 py-2 rounded-xl  w-min text-white">
+                    <div 
+                        className="px-0 py-2 rounded-xl w-min"
+                        style={{
+                            fontWeight: theme.primaryFontWeight,
+                            color: theme.primaryText
+                        }}
+                    >
                         {title}
                     </div>
                 )}
@@ -63,11 +87,11 @@ function WidgetContainer({
                         </button>
                     ))}
                 {!title && !buttons && (
-                    <div className="px-4 py-2 rounded-xl text-2xl w-min text-white">
+                    <div className="pl-1 pr-4 flex items-center rounded-xl sm:text-lg text-sm font-semibold w-min text-white">
                         {smallTitle}
                     </div>
                 )}
-                <div className="flex w-full max-w-4xl space-x-2 py-2 items-center justify-center">
+                <div className="flex w-full max-w-4xl space-x-2 items-center justify-center">
                     <div className="flex grow" />
                     {userAddress && address && userAddress === address && setOutboundAndInboundTokens && (
                         <ButtonWithInfoPopup
@@ -86,9 +110,9 @@ function WidgetContainer({
                                         onClick={() =>
                                             setOutboundAndInboundTokens()
                                         }
-                                        className=" bg-aqueductBlue/20 flex items-center justify-center text-aqueductBlue p-2 rounded-xl hover:bg-aqueductBlue/75 hover:text-black transition-all duration-300"
+                                        className=" bg-aqueductBlue/10 flex items-center justify-center text-aqueductBlue/50 hover:text-aqueductBlue p-2 rounded-xl hover:bg-aqueductBlue/20 hover:text-black transition-all duration-300"
                                     >
-                                        <RiPencilFill size={25} />
+                                        <RiPencilFill className="md:text-2xl sm:text-lg text-sm" />
                                     </a>
                                 </Link>
                             }
@@ -101,7 +125,7 @@ function WidgetContainer({
                                 <button
                                     type="button"
                                     onClick={() => cancelStream()}
-                                    className="bg-red-500/30 text-red-600 p-2 rounded-xl hover:bg-red-500/75 hover:text-black transition-all duration-300"
+                                    className="bg-red-500/10 text-red-600/50 p-2 rounded-xl hover:text-red-600 hover:bg-red-500/20 2hover:text-black transition-all duration-300"
                                     disabled={isLoading || isDeleting}
                                     aria-label="Delete stream button"
                                 >
@@ -110,7 +134,7 @@ function WidgetContainer({
                                             <LoadingSpinner size={25} />
                                         </div>
                                     ) : (
-                                        <RiCloseCircleFill size={25} />
+                                        <RiCloseCircleFill className="md:text-2xl sm:text-lg text-sm" />
                                     )}
                                 </button>
                             }
@@ -118,9 +142,9 @@ function WidgetContainer({
                     )}
                 </div>
             </div>
-            {children}
-        </div>
-    );
-}
+        )}
+        {children}
+    </div>
+);
 
 export default WidgetContainer;

@@ -27,6 +27,8 @@ module.exports = {
     plugins: ["@typescript-eslint"],
     rules: {
         "@typescript-eslint/no-explicit-any": "error",
+        "react/function-component-definition": "off",
+        "react/require-default-props": "off"
     },
     root: true,
 };

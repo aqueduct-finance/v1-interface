@@ -23,6 +23,7 @@ const ConnectWalletButton = () => {
     }
 
     useEffect(() => {
+        console.log('here')
         if (isConnected && address) {
             setText(`${address.slice(0, 6)}...${address.slice(-4)}`)
             setConnected(true)
