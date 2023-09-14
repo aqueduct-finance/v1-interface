@@ -1,6 +1,6 @@
 import React from "react";
-import { NavItem } from "../types/NavItems";
 import { useRouter } from "next/router";
+import { NavItem } from "../types/NavItems";
 
 interface NavOptionProps {
     options: NavItem;
@@ -21,6 +21,7 @@ const NavOption = ({
 
     return (
         <button
+            type="button"
             className={`flex rounded-xl whitespace-nowrap min-w-[8rem] ${expand ? 'grow' : ''}`}
             style={{ flex: "1 1 0px" }}
             onClick={() => {

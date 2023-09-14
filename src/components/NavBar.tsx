@@ -1,16 +1,7 @@
-import React, { useState } from "react";
-import Image from "next/image";
-import { IoClose, IoMenu } from "react-icons/io5";
+import React from "react";
 import { ConnectKitButton } from "connectkit";
 import NavOption from "./NavOption";
-import NavLink from "./NavLink";
 import theme from "../styles/theme";
-
-declare global {
-    interface Window {
-        ethereum: ExplicitAny;
-    }
-}
 
 const navItems: { label: string; page: string }[] = [
     {
@@ -24,13 +15,12 @@ const navItems: { label: string; page: string }[] = [
 ];
 
 function NavBar() {
-    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <>
             <div className="w-full flex justify-center sticky top-0 z-50 backdrop-blur-xl 2pixel-blur bg-black/20">
                 <div
-                    className={`max-w-screen-2xl flex w-full items-center justify-between px-4 py-2 md:px-6 md:pt-4 md:pb-2 lg:px-8 lg:pt-6 lg:pb-4 overflow-hidden`}
+                    className='max-w-screen-2xl flex w-full items-center justify-between px-4 py-2 md:px-6 md:pt-4 md:pb-2 lg:px-8 lg:pt-6 lg:pb-4 overflow-hidden'
                 >
                     
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -48,10 +38,10 @@ function NavBar() {
                         <div
                             className="rounded-xl 2bg-item bg-white/ md:flex flex-row hidden items-center justify-center"
                         >
-                            {navItems.map((item, i) => (
+                            {navItems.map((item) => (
                                 <NavOption
                                     options={item}
-                                    key={i}
+                                    key={`nav-option-${item.label}`}
                                 />
                             ))}
                         </div>
@@ -67,11 +57,11 @@ function NavBar() {
                     backgroundColor: theme.bgColor
                 }}
             >
-                {navItems.map((item, i) => (
+                {navItems.map((item) => (
                     <NavOption
                         expand
                         options={item}
-                        key={i}
+                        key={`nav-option-${item.label}`}
                     />
                 ))}
             </div>
