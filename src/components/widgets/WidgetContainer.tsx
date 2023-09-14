@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { RiCloseCircleFill, RiPencilFill } from "react-icons/ri";
 import LoadingSpinner from "../LoadingSpinner";
@@ -12,9 +13,7 @@ type ButtonProps = {
 };
 
 interface WidgetContainerProps {
-    title?: string;
-    smallTitle?: string;
-    buttons?: ButtonProps[];
+    title: string;
     children: React.ReactNode;
     isUnbounded?: boolean;
     userAddress?: string | undefined
@@ -28,10 +27,8 @@ interface WidgetContainerProps {
     padding?: string;
 }
 
-const WidgetContainer = ({
+function WidgetContainer({
     title,
-    smallTitle,
-    buttons,
     children,
     isUnbounded,
     userAddress,
@@ -142,9 +139,9 @@ const WidgetContainer = ({
                     )}
                 </div>
             </div>
-        )}
-        {children}
-    </div>
-);
+            {children}
+        </div>
+    );
+}
 
 export default WidgetContainer;

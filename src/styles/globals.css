@@ -12,12 +12,12 @@ html {
 }
 
 .Toastify__toast-container--bottom-right {
-  margin-bottom: 5rem;
+    margin-bottom: 5rem;
 }
 
 .Toastify__toast-icon {
-  margin-bottom: 0.8rem;
-  margin-top: 0.2rem;
+    margin-bottom: 0.8rem;
+    margin-top: 0.2rem;
 }
 
 @layer components {
@@ -187,21 +187,20 @@ html {
 }
 
 @keyframes clippath {
+    0%,
+    100% {
+        clip-path: inset(0 0 95% 0);
+    }
 
-  0%,
-  100% {
-    clip-path: inset(0 0 95% 0);
-  }
+    25% {
+        clip-path: inset(0 95% 0 0);
+    }
 
-  25% {
-    clip-path: inset(0 95% 0 0);
-  }
+    50% {
+        clip-path: inset(95% 0 0 0);
+    }
 
-  50% {
-    clip-path: inset(95% 0 0 0);
-  }
-
-  75% {
-    clip-path: inset(0 0 0 95%);
-  }
+    75% {
+        clip-path: inset(0 0 0 95%);
+    }
 }

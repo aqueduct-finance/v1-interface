@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import { IoClose, IoMenu } from "react-icons/io5";
 import { ConnectKitButton } from "connectkit";
 import NavOption from "./NavOption";
@@ -7,7 +8,7 @@ import theme from "../styles/theme";
 
 declare global {
     interface Window {
-        Ethereum: any
+        ethereum: ExplicitAny;
     }
 }
 
@@ -24,7 +25,6 @@ const navItems: { label: string; page: string }[] = [
 
 function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
-
 
     return (
         <>

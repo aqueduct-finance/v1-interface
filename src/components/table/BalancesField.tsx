@@ -15,7 +15,7 @@ interface BalancesFieldProps {
     token1: TokenTypes;
 }
 
-const BalancesField = ({ token0, token1 }: BalancesFieldProps) => {
+function BalancesField({ token0, token1 }: BalancesFieldProps) {
     const [currentBalance0, setCurrentBalance0] = useState<BigNumber>(
         ethers.BigNumber.from(0)
     );
@@ -125,9 +125,15 @@ const BalancesField = ({ token0, token1 }: BalancesFieldProps) => {
                     ethers.utils.formatEther(currentBalance1)
                 ).toLocaleString(undefined, { minimumFractionDigits: 6 })}
             </p>
-            <Image src={token1.logoURI} className="ml-1" width="20" height="20" alt="TWAMM" />
+            <Image
+                src={token1.logoURI}
+                className="ml-1"
+                width="20"
+                height="20"
+                alt="TWAMM"
+            />
         </div>
     );
-};
+}
 
 export default BalancesField;

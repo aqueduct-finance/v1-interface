@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react'
 import { ConnectKitButton } from "connectkit";
 import makeBlockie from 'ethereum-blockies-base64';
@@ -50,7 +51,7 @@ const ConnectWalletButton = () => {
                 );
             }}
         </ConnectKitButton.Custom>
-    )
+    );
 }
 
 export default ConnectWalletButton;

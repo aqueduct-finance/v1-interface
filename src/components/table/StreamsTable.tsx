@@ -12,7 +12,7 @@ import { ExplicitAny } from "../../types/ExplicitAny";
 import useCFA from "../helpers/useCFA";
 import { decodeGetFlowRes } from "../helpers/decodeGetFlowRes";
 
-const StreamsTable = () => {
+function StreamsTable() {
     const provider = useEthersProvider();
     const { chain } = useNetwork();
     const { address } = useAccount();
@@ -119,6 +119,6 @@ const StreamsTable = () => {
             </div>
         </section>
     );
-};
+}
 
 export default StreamsTable;

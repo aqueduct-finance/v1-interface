@@ -12,12 +12,12 @@ interface TableRowProps {
     data: ExplicitAny[];
 }
 
-const TableRow = ({
+function TableRow({
     columnProps,
     columnComponents,
     link,
     data,
-}: TableRowProps) => {
+}: TableRowProps) {
     const color = useMemo(() => ({ color: "rgb(255 255 255 / 0.5)" }), []);
     return (
         <Link href={link} data-test-id="table-row-link">
@@ -45,6 +45,6 @@ const TableRow = ({
             </div>
         </Link>
     );
-};
+}
 
 export default TableRow;
