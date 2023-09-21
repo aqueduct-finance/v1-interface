@@ -3,6 +3,7 @@ import { ExplicitAny } from "../../types/ExplicitAny";
 import WidgetContainer from "../widgets/WidgetContainer";
 import TableRow from "./TableRow";
 import theme from "../../styles/theme";
+import {BsCheck} from 'react-icons/bs'
 
 interface GenericTableProps {
     title: string;
@@ -26,7 +27,45 @@ const GenericTable = ({
     noDataMessage,
 }: GenericTableProps) => (
     <WidgetContainer padding="md:p-5 md:pb-8" title={title} isUnbounded>
-        <div className="flex px-4 text-white font-semibold">
+        <div className="px-2 space-y-2">
+            <div className="flex text-white pl-4 space-x-4 py-3 mb-6 rounded-xl bg-white/5 w-full">
+                <div className="rounded-md w-6 h-6 border-2 border-white/20 bg-white/5">
+
+                </div>
+                <p>
+                    Invite all users in Aqueduct network
+                </p>
+            </div>
+            {
+                [
+                    "ACME corp",
+                    "Bank A",
+                    "FinanceCorp B",
+                    "Institution C",
+                    "DefiGroup D",
+                    "Network E Financial",
+                    "Bank F",
+                    "DefiHub G",
+                    "Financial Network H",
+                    "Bank I"
+                  ].map((str, i) => {
+                    return (
+                        <div className="flex text-white pl-4 space-x-4 py-3 rounded-xl bg-white/5 w-full">
+                            <div className={`flex items-center justify-center rounded-md w-6 h-6 border-2 border-white/20 ${i == 0 || i == 2 ? ' bg-aqueductBlue ' : ' bg-white/5 '}`}>
+                                {
+                                    (i == 0 || i == 2) &&
+                                    <BsCheck />
+                                }
+                            </div>
+                            <p>
+                                {str}
+                            </p>
+                        </div>
+                    )
+                })
+            }
+        </div>
+        {/*<div className="flex px-4 text-white font-semibold">
             {labels.map((label, i) => (
                 <div 
                     className={columnProps[i]} 
@@ -77,7 +116,7 @@ const GenericTable = ({
                     <p className="p-4 text-white/50 w-full bg-item flex items-center justify-center rounded-2xl">{noDataMessage}</p>
                 </div>
             }</>
-        )}
+        )}*/}
     </WidgetContainer>
 );
 

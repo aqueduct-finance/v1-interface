@@ -101,10 +101,10 @@ function StreamsTable() {
 
     return (
         <section className="flex flex-col items-center w-full pb-64">
-            <div className="w-full max-w-6xl px-4">
+            <div className="w-full max-w-6xl px-32">
                 <GenericTable
-                    title="My Swaps"
-                    labels={["Pool", "Start Date", "Balances"]}
+                    title="Invite to trade:"
+                    labels={[]}
                     columnProps={[
                         "min-w-[14rem] w-full max-w-[20rem]",
                         "min-w-[7rem] w-full max-w-[16rem]",

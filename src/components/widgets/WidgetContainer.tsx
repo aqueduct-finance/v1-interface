@@ -46,7 +46,7 @@ const WidgetContainer = ({
 }: WidgetContainerProps) => (
     <div
         className={
-            `flex flex-col w-full ${padding} space-y-6 bg-transparent md:bg-current border-none md:border-solid transition md:shadow-2xl ${!isUnbounded && "  max-w-xl "
+            `flex flex-col w-full ${padding} space-y-1 bg-transparent md:bg-current border-none md:border-solid transition md:shadow-2xl ${!isUnbounded && "  max-w-xl "
         }`}
         style={
             {

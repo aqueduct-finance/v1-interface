@@ -35,7 +35,7 @@ function NavBar() {
                             Aqueduct
                         </h1>
                         <div className="w-full" />
-                        <div
+                        {/*<div
                             className="rounded-xl 2bg-item bg-white/ md:flex flex-row hidden items-center justify-center"
                         >
                             {navItems.map((item) => (
@@ -44,7 +44,7 @@ function NavBar() {
                                     key={`nav-option-${item.label}`}
                                 />
                             ))}
-                        </div>
+                            </div>*/}
                         <div className="w-full" />
                         <ConnectKitButton />
                 </div>
