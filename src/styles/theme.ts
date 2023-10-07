@@ -14,7 +14,10 @@ const theme: Theme = {
     accentFontWeight: '500',
     borderColor: '#ffffff18',
     swapButtonRadius: '1.5rem',
-    timeSelectBottomBorderRadius: '1.5rem'
+    timeSelectBottomBorderRadius: '1.5rem',
+    useMaxText: '#FFFFFF',
+    accentBorderWidth: '1px',
+    accentBorderColor: '#FFFFFF10'
 }
 
 export default theme;
