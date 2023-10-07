@@ -1,7 +1,6 @@
 import type { NextPage } from 'next'
 import TWAMMWidget from 'aqueduct-widget';
 import React from 'react';
-//import 'aqueduct-widget/styles';
 import theme from '../styles/theme';
 
 const Home: NextPage = () => {

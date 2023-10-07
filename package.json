@@ -13,7 +13,7 @@
     "@superfluid-finance/sdk-core": "^0.6.6",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "apollo-boost": "^0.4.9",
-    "aqueduct-widget": "^0.7.20",
+    "aqueduct-widget": "^0.7.22",
     "axios": "^1.4.0",
     "connectkit": "^1.4.0",
     "eslint-config-airbnb": "^19.0.4",
