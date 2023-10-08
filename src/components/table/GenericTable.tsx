@@ -13,6 +13,7 @@ interface GenericTableProps {
     data: ExplicitAny[][] | undefined;
     isLoading: boolean;
     noDataMessage?: string;
+    rowProps?: string;
 }
 
 const GenericTable = ({
@@ -24,6 +25,7 @@ const GenericTable = ({
     data,
     isLoading,
     noDataMessage,
+    rowProps
 }: GenericTableProps) => (
     <WidgetContainer padding="md:p-5 md:pb-8" title={title} isUnbounded>
         <div className="flex px-4 text-white font-semibold">
@@ -68,13 +70,21 @@ const GenericTable = ({
                         // TODO: don't use index as key
                         // eslint-disable-next-line react/no-array-index-key
                         key={`column-${i}`}
+                        rowProps={rowProps}
                     />
                 ))}
             </div>
         ) : (
             <>{!isLoading &&
-                <div className="pt-4">
-                    <p className="p-4 text-white/50 w-full bg-item flex items-center justify-center rounded-2xl">{noDataMessage}</p>
+                <div 
+                    style={{
+                        background: theme.tokenBox,
+                        borderRadius: theme.secondaryBorderRadius,
+                        color: theme.primaryText,
+                    }}
+                    className="p-4 w-full flex items-center justify-center rounded-2xl opacity-75"
+                >
+                    {noDataMessage}
                 </div>
             }</>
         )}

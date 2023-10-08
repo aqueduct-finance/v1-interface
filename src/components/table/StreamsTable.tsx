@@ -24,7 +24,7 @@ function StreamsTable() {
     const [isLoading, setIsLoading] = useState(true);
 
     // get streams from pool contract
-    // TODO: router/factory contract to track current streams so we don't have to manually check here
+    // TODO: subgraph to track current streams so we don't have to manually check here
     useEffect(() => {
         async function updateData() {
             if (!address || !chain || !provider) {
@@ -79,7 +79,7 @@ function StreamsTable() {
                         const date = new Date(Number(decodedFlowParams1.timestamp) * 1000);
                         newData.push([
                             { token0, token1 },
-                            { title: date.toLocaleDateString() },
+                            { text: date.toLocaleDateString() },
                             { token0, token1 },
                         ]);
                         newLinks.push(
@@ -88,8 +88,6 @@ function StreamsTable() {
                     }
                 })
             );
-
-            console.log(newData)
 
             setData(newData);
             setLinks(newLinks);

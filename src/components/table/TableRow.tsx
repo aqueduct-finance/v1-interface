@@ -10,6 +10,7 @@ interface TableRowProps {
     columnComponents: ((...args: ExplicitAny) => JSX.Element)[];
     link: string;
     data: ExplicitAny[];
+    rowProps?: string;
 }
 
 function TableRow({
@@ -17,12 +18,13 @@ function TableRow({
     columnComponents,
     link,
     data,
+    rowProps,
 }: TableRowProps) {
     const color = useMemo(() => ({ color: "rgb(255 255 255 / 0.5)" }), []);
     return (
         <Link href={link} data-test-id="table-row-link">
             <div
-                className="relative flex p-4 items-center rounded-2xl hover:scale-[1.005] border-2 border-transparent cursor-pointer transition-all duration-300"
+                className={`relative flex p-4 items-center rounded-2xl hover:scale-[1.005] border-2 border-transparent cursor-pointer transition-all duration-300 ${rowProps ?? ''}`}
                 aria-label="Table row"
                 style={{
                     background: theme.tokenBox,

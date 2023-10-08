@@ -12,6 +12,10 @@ const navItems: { label: string; page: string }[] = [
         label: "Swap",
         page: "/",
     },
+    {
+        label: "Tokens",
+        page: "/tokens",
+    }
 ];
 
 function NavBar() {

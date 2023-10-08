@@ -1,7 +1,7 @@
 import { Framework } from "@superfluid-finance/sdk-core";
 import { ethers } from "ethers";
 import { TokenTypes } from "../types/TokenOption";
-import tokens from "./tokens";
+import { findToken } from "./tokens";
 
 interface GetTokenArgs {
     tokenAddress: string;
@@ -14,9 +14,7 @@ const getToken = async ({
     provider,
     chainId,
 }: GetTokenArgs): Promise<TokenTypes> => {
-    const token = tokens.find(
-        (t: { address: string }) => t.address === tokenAddress
-    );
+    const token = findToken(tokenAddress);
     if (token) {
         return token;
     }

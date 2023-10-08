@@ -19,11 +19,11 @@ function PoolField({
                     className="z-10 "
                     width="28"
                     height="28"
-                    alt="Jeff"
+                    alt={token0.name}
                 />
             </div>
             <div className="rounded drop-shadow-lg">
-                <Image src={token1.logoURI} width="28" height="28" alt="Bob" />
+                <Image src={token1.logoURI} width="28" height="28" alt={token1.name} />
             </div>
 
             <div className="flex text-sm pl-4 space-x-1 monospace-font font-semibold">

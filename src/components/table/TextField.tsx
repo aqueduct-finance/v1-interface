@@ -1,7 +1,7 @@
-function TextField({ title }: { title: string }) {
+function TextField({ text }: { text: string }) {
     return (
-        <div className="monospace-font text-sm font-semibold opacity-75 ">
-            {title}
+        <div className="text-sm font-medium opacity-75 ">
+            {text}
         </div>
     );
 }
