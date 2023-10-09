@@ -1,14 +1,22 @@
-import { BigNumber } from "ethers";
+import { ethers } from "ethers";
 
 export interface getReservesAtTimeRes {
-    reserve0: BigNumber;
-    reserve1: BigNumber;
+    reserve0: number;
+    reserve1: number;
 }
 
 export const decodeGetReservesAtTimeRes = (returnArray: unknown): getReservesAtTimeRes => {
     const array = returnArray as any[];
+
+    if (!array || array.length < 2) {
+        return {
+            reserve0: 0,
+            reserve1: 0
+        }
+    }
+
     return {
-        reserve0: BigNumber.from(array[0] as BigInt),
-        reserve1: BigNumber.from(array[1] as BigInt)
+        reserve0: parseFloat(ethers.utils.formatEther(array[0])),
+        reserve1: parseFloat(ethers.utils.formatEther(array[1]))
     }
 }

@@ -1,11 +1,9 @@
 /* eslint-disable radix */
 import type { NextPage } from "next";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { IoArrowBack, IoLogoTwitter } from "react-icons/io5";
-import { BiLink } from "react-icons/bi";
-import { RiCloseCircleFill, RiPencilFill } from "react-icons/ri";
+import { IoArrowBack } from "react-icons/io5";
 import { BigNumber, ethers } from "ethers";
 import { useAccount, useNetwork } from "wagmi";
 import { Framework } from "@superfluid-finance/sdk-core";
@@ -16,22 +14,14 @@ import { TokenTypes } from "../../../../../types/TokenOption";
 import getPoolAddress from "../../../../../components/helpers/getPool";
 import WidgetContainer from "../../../../../components/widgets/WidgetContainer";
 import PageNotFound from "../../../../../components/PageNotFound";
-import getTweetTemplate from "../../../../../utils/getTweetTemplate";
-import getSharedLink from "../../../../../utils/getSharedLink";
 import { useStore } from "../../../../../store";
-import ButtonWithInfoPopup from "../../../../../components/ButtonInfoPopup";
 import getToken from "../../../../../utils/getToken";
-import LoadingSpinner from "../../../../../components/LoadingSpinner";
-import SwapData from "../../../../../types/SwapData";
 import { mumbaiChainId } from "../../../../../utils/constants";
 import { showTransactionConfirmedToast } from "../../../../../components/Toasts";
 import getErrorToast from "../../../../../utils/getErrorToast";
 import TotalAmountsStreamedWidget from "../../../../../components/widgets/TotalAmountsStreamedWidget";
 import PriceChart from "../../../../../components/streamview/PriceChart";
-import { gql, useQuery } from "@apollo/client";
-import { PriceHistory } from "../../../../../types/PriceHistory";
 import useSuperToken from "../../../../../components/helpers/useSuperToken";
-import { decodeRealTimeBalanceRes } from "../../../../../components/helpers/decodeRealTimeBalanceRes";
 import usePool from "../../../../../components/helpers/usePool";
 import { decodeGetUserBalancesAtTimeRes } from "../../../../../components/helpers/decodeGetUserBalancesAtTimeRes";
 import useCFA from "../../../../../components/helpers/useCFA";
@@ -225,14 +215,14 @@ const PoolInteractionVisualization: NextPage = () => {
             // compute current and average prices
             if (BigNumber.from(decodedFlowParams0.flowRate).gt(0)) {
                 setCurrentPrice(
-                    decodedReserves.reserve1.mul(1000).div(decodedReserves.reserve0).toNumber() / 1000
+                    decodedReserves.reserve1 / decodedReserves.reserve0
                 );
                 setAveragePrice(
                     decodedPresentLockedBalances.balance1.mul(1000).div(initialBalance0).toNumber() / 1000
                 );
             } else if (BigNumber.from(decodedFlowParams1.flowRate).gt(0)) {
                 setCurrentPrice(
-                    decodedReserves.reserve0.mul(1000).div(decodedReserves.reserve1).toNumber() / 1000
+                    decodedReserves.reserve0 / decodedReserves.reserve1
                 );
                 setAveragePrice(
                     decodedPresentLockedBalances.balance0.mul(1000).div(initialBalance1).toNumber() / 1000
@@ -354,121 +344,6 @@ const PoolInteractionVisualization: NextPage = () => {
         }
     };
 
-    const currentDate = new Date();
-
-    const totalPeriod = new Date(currentDate.getFullYear() - 1, currentDate.getMonth()).getTime();
-
-    const GET_DATA = gql`
-    {
-        syncs(first: 500) {
-          id
-          reserve0
-          reserve1
-          blockTimestamp
-        }
-      }
-      
-  `;
-
-    const { error, data } = useQuery(GET_DATA);
-
-    const [convertedData, setConvertedData] = useState<PriceHistory[]>([]);
-    const minDifferenceRef = useRef(Infinity);
-    const closestDateRef = useRef<number | null>(null);
-    const [loading, setLoading] = useState(true);
-    const periodSelect = useRef<string>('1Y');
-
-    useEffect(() => {
-        if (data !== undefined) {
-            if (!startDate) {
-                return;
-            }
-
-            const currentDate = new Date();
-
-            const timePeriodOptions: { [key: string]: number } = {
-                '1H': currentDate.getTime() - (60 * 60 * 1000),
-                '1D': currentDate.getTime() - (24 * 60 * 60 * 1000),
-                '1W': currentDate.getTime() - (7 * 24 * 60 * 60 * 1000),
-                '1M': new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).getTime(),
-                '1Y': totalPeriod,
-            };
-
-            closestDateRef.current = null;
-            minDifferenceRef.current = Infinity;
-
-            try {
-                setLoading(true);
-                let currentIndex = -1;
-                const newConvertedData: PriceHistory[] = [];
-
-                const sortedSyncs = [...data.syncs].sort((a, b) => {
-                    const dateA = new Date(a.blockTimestamp * 1000);
-                    const dateB = new Date(b.blockTimestamp * 1000);
-                    return dateA.getTime() - dateB.getTime();
-                });
-
-                sortedSyncs.forEach((item: {
-                    blockTimestamp: any;
-                    reserve0: { toString: () => string };
-                    reserve1: { toString: () => string };
-                }) => {
-                    currentIndex++
-                    const blockTimestamp = new Date(item.blockTimestamp * 1000);
-
-                    const formattedDate = blockTimestamp.toLocaleString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true
-                    });
-
-                    if (blockTimestamp.getTime() >= timePeriodOptions[periodSelect.current]) {
-
-                        const formattedStartDate = Math.floor(startDate.getTime() / 1000).toString();
-
-                        if (item.blockTimestamp === formattedStartDate) {
-                            closestDateRef.current = currentIndex;
-                        }
-
-                        const convertedItem: PriceHistory = {
-                            ...item,
-                            blockTimestamp: formattedDate,
-                            token0Price: parseFloat(ethers.utils.formatEther(item.reserve1.toString())) / parseFloat(ethers.utils.formatEther(item.reserve0.toString())),
-                        };
-
-                        newConvertedData.push(convertedItem);
-                    }
-                });
-
-                const formattedCurrentDate = currentDate.toLocaleString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: true
-                });
-
-                const currentPriceData = { blockTimestamp: formattedCurrentDate, token0Price: currentPrice }
-
-                newConvertedData.push(currentPriceData)
-
-                newConvertedData.sort((a, b) => {
-                    const dateA = new Date(a.blockTimestamp);
-                    const dateB = new Date(b.blockTimestamp);
-                    return dateA.getTime() - dateB.getTime();
-                });
-
-                setConvertedData(newConvertedData);
-                setLoading(false);
-            } catch {
-                setLoading(false);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, startDate, periodSelect.current]);
-
     return (
         <div className="flex justify-center w-full pb-24 md:py-24 overflow-hidden">
             {isLoading || (!isLoading && positionFound) ? (
@@ -482,13 +357,9 @@ const PoolInteractionVisualization: NextPage = () => {
                         </Link>
                     </div>
                     <PriceChart
-                        priceHistory={convertedData}
-                        entry={closestDateRef.current}
                         token0={token0}
                         token1={token1}
-                        currentPrice={currentPrice}
-                        loading={loading === true && convertedData.length <= 0}
-                        period={periodSelect}
+                        startDate={startDate}
                     />
                     {userAddress && token0 && token1 && (
                         <div className="space-y-12 md:space-y-4">

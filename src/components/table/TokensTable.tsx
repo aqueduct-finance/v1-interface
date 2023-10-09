@@ -45,12 +45,12 @@ function TokensTable() {
     const { error, data } = useQuery(GET_DATA);
 
     // binary search to find closest timestamp to 24h ago (for % change calc)
-    function findClosestTimestamp(arr, targetTimestamp) {
+    function findClosestTimestamp(arr: Sync[], targetTimestamp: number) {
         const l = Math.floor(arr.length / 4);
         return findClosestTimestampRecur(arr, targetTimestamp, arr.length - 1 - l, l);
     }
 
-    function findClosestTimestampRecur(arr, targetTimestamp, i, l) {
+    function findClosestTimestampRecur(arr: Sync[], targetTimestamp: number, i: number, l: number) {
         if (targetTimestamp == arr[i].blockTimestamp || l == 0) {
             return { sync: arr[i], index: i };
         } else if (targetTimestamp > arr[i].blockTimestamp) {
@@ -132,7 +132,7 @@ function TokensTable() {
                     // slice syncs for 24h display and add most recent datapoint
                     const syncs24h = data.syncs.slice(data24h.index);
                     const formattedSyncs24h = [];
-                    syncs24h.forEach((s) => {
+                    syncs24h.forEach((s: SyncQuery) => {
                         formattedSyncs24h.push({
                             blockTimestamp: parseFloat(s.blockTimestamp),
                             reserve0: parseFloat(ethers.utils.formatEther(s.reserve0)),

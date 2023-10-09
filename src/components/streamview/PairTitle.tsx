@@ -36,9 +36,9 @@ const PairTitle = ({
     <div className="w-full">
         {token0 && token1 && (
             <div className="flex flex-row justify-between items-end flex-wrap">
-                <div className="flex flex-col ml-8 space-y-3">
+                <div className="flex flex-col space-y-3">
                     <div className="flex flex-row justify-center items-center">
-                        <div className="flex items-center justify-center text-4xl pl-4 space-x-3 font-semibold">
+                        <div className="flex items-center justify-center text-4xl space-x-3 font-semibold">
                             <p>{token0.underlyingToken?.symbol}</p>
                             <div className="bg-white/25 w-[0.3rem] h-10 rotate-12 rounded-full" />
                             <p>{token1.underlyingToken?.symbol}</p>
@@ -52,7 +52,7 @@ const PairTitle = ({
                             </div>
                         </div>
                     </div>
-                    <div className="w-min whitespace-nowrap flex items-center justify-center rounded-xl p-2 px-4 ml-3 bg-white/5 text-white/50 space-x-2 font-medium">
+                    <div className="w-min whitespace-nowrap flex items-center justify-center rounded-xl p-2 px-4 bg-white/5 text-white/50 space-x-2 font-medium">
                         <p>
                             1 {token0.underlyingToken?.symbol}
                         </p>
@@ -64,7 +64,7 @@ const PairTitle = ({
                         </p>
                     </div>
                 </div>
-                <div className="flex mr-12 p-1 ml-9 mt-6 sm:mt-0 sm:ml-0 space-x-1">
+                <div className="flex p-1 ml-9 mt-6 sm:mt-0 sm:ml-0 space-x-1">
                     {timeArray.map((item, i) => (
                         <div className={`${period.current === item.text ? "bg-aqueductBlue/50 outline outline-2 outline-aqueductBlue text-white" : "bg-transparent text-white/50"} py-1 px-1 flex items-center justify-center rounded-xl w-[40px] cursor-pointer duration-100 ease-in-out`}
                             key={i}
