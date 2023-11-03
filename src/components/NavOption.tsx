@@ -22,7 +22,7 @@ const NavOption = ({
     return (
         <button
             type="button"
-            className={`flex rounded-xl whitespace-nowrap min-w-[8rem] ${expand ? 'grow' : ''}`}
+            className={`flex rounded-xl whitespace-nowrap md:min-w-[8rem] ${expand ? 'grow' : ''}`}
             style={{ flex: "1 1 0px" }}
             onClick={() => {
                 handleNavClick();
@@ -31,8 +31,8 @@ const NavOption = ({
             <div
                 className={`${router.asPath
                     === options.page ?
-                    "2bg-highlightedItem bg-white/5 text-white border-[1px] border-white/5 rounded-xl" : "bg-transparent border-0 border-transparent text-accentText"} 
-                w-full flex items-center justify-center 2rounded-2xl px-12 py-3 font-semibold neuehaas-font hover:text-white transition-all duration-300`}>
+                    "bg-white/5 text-white border-[1px] border-white/5 rounded-xl" : "bg-transparent border-0 border-transparent text-accentText"} 
+                w-full flex items-center justify-center text-sm lg:text-base py-3 font-semibold neuehaas-font hover:text-white transition-all duration-300`}>
                 <h1>
                     {options.label}
                 </h1>
