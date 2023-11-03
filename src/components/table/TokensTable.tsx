@@ -184,10 +184,10 @@ function TokensTable() {
                     labels={["Token Name", "Price", "Change", "TVL", ""]}
                     columnProps={[
                         "min-w-[16rem] max-w-[20rem]",
-                        "min-w-[10rem] max-w-[20rem]",
-                        "min-w-[10rem] max-w-[20rem]",
-                        "min-w-[12rem] max-w-[20rem]",
-                        "min-w-[12rem] w-full max-w-[20rem] pr-12"
+                        "min-w-0 max-w-[20rem] lg:min-w-[10rem]",
+                        "min-w-[10rem] max-w-[20rem] hidden lg:flex",
+                        "min-w-[12rem] max-w-[20rem] hidden lg:flex",
+                        "min-w-[12rem] w-full max-w-[20rem] pr-12 hidden lg:block"
                     ]}
                     columnComponents={[TokenName, TextField, PercentChangeField, TextField, Graph24h]}
                     rowLinks={links}
