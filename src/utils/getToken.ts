@@ -31,7 +31,7 @@ const getToken = async ({
         name: tokenName,
         symbol: "undefined",
         logoURI: "",
-        address: tokenAddress,
+        address: tokenAddress as `0x${string}`,
         decimals: 18,
         chainId: 5,
     };

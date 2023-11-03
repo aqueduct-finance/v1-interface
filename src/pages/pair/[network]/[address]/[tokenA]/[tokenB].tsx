@@ -273,57 +273,55 @@ const PoolInteractionVisualization: NextPage = () => {
         let transactionHash;
         let result;
         try {
-            if (
-                token0 &&
-                token1 &&
-                address &&
-                userAddress &&
-                address === userAddress
-            ) {
-                const superfluid = await Framework.create({
-                    chainId: mumbaiChainId,
-                    provider,
+            if (!token0 || !token1 || !address || !userAddress || address !== userAddress) { return; }
+            
+            const poolAddress = getPoolAddress(token0.address, token1.address);
+
+            if (!poolAddress) { return; }
+
+            const superfluid = await Framework.create({
+                chainId: mumbaiChainId,
+                provider,
+            });
+
+            // different operation if providing liquidity or not
+            const operations: Operation[] = [];
+            if (isTwap0) {
+                const operation = superfluid.cfaV1.deleteFlow({
+                    sender: address,
+                    receiver: poolAddress,
+                    superToken: token1.address,
                 });
+                operations.push(operation);
+            }
+            if (isTwap1) {
+                const operation = superfluid.cfaV1.deleteFlow({
+                    sender: address,
+                    receiver: poolAddress,
+                    superToken: token0.address,
+                });
+                operations.push(operation);
+            }
 
-                // different operation if providing liquidity or not
-                const operations: Operation[] = [];
-                if (isTwap0) {
-                    const operation = superfluid.cfaV1.deleteFlow({
-                        sender: address,
-                        receiver: getPoolAddress(token0.address, token1.address),
-                        superToken: token1.address,
-                    });
-                    operations.push(operation);
+            if (operations.length > 0) {
+                const batchCall = superfluid.batchCall(operations);
+                setIsDeleting(true);
+                // new signer object (Wagmi Update) requires new config, checking undefined
+                if (signer) {
+                    result = await batchCall.exec(signer);
+                } else {
+                    return;
                 }
-                if (isTwap1) {
-                    const operation = superfluid.cfaV1.deleteFlow({
-                        sender: address,
-                        receiver: getPoolAddress(token0.address, token1.address),
-                        superToken: token0.address,
-                    });
-                    operations.push(operation);
-                }
 
-                if (operations.length > 0) {
-                    const batchCall = superfluid.batchCall(operations);
-                    setIsDeleting(true);
-                    // new signer object (Wagmi Update) requires new config, checking undefined
-                    if (signer) {
-                        result = await batchCall.exec(signer);
-                    } else {
-                        return;
-                    }
+                transactionHash = result.hash;
+                const transactionReceipt = await result.wait();
+                setIsDeleting(false);
 
-                    transactionHash = result.hash;
-                    const transactionReceipt = await result.wait();
-                    setIsDeleting(false);
-
-                    router.push("/my-streams");
-                    showTransactionConfirmedToast(
-                        "Deleted stream",
-                        transactionReceipt.transactionHash
-                    );
-                }
+                router.push("/my-streams");
+                showTransactionConfirmedToast(
+                    "Deleted stream",
+                    transactionReceipt.transactionHash
+                );
             }
         } catch (error) {
             getErrorToast(error, transactionHash);

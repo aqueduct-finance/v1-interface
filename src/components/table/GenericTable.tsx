@@ -10,7 +10,7 @@ interface GenericTableProps {
     columnProps: string[];
     columnComponents: ((...args: ExplicitAny) => JSX.Element)[];
     rowLinks: string[] | undefined;
-    rowFunctions: (() => void)[];
+    rowFunctions?: (() => void)[];
     data: ExplicitAny[][] | undefined;
     isLoading: boolean;
     noDataMessage?: string;
