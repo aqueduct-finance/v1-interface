@@ -19,6 +19,7 @@ import Graph24h from "./Graph24h";
 import { ethers } from "ethers";
 import { fDAIx, fUSDCx } from "../../utils/tokens";
 import { TokenTypes } from "../../types/TokenOption";
+import { useWidgetStore } from "aqueduct-widget";
 
 function TokensTable() {
     const provider = useEthersProvider();
@@ -26,8 +27,11 @@ function TokensTable() {
     const { address } = useAccount();
     const cfa = useCFA();
 
+    const store = useWidgetStore();
+
     const [tableData, setTableData] = useState<ExplicitAny[][]>();
     const [links, setLinks] = useState<string[]>();
+    const [functions, setFunctions] = useState<(() => void)[]>([]);
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -75,6 +79,7 @@ function TokensTable() {
 
             const newData: ExplicitAny[][] = [];
             const newLinks: ExplicitAny[] = [];
+            const newFunctions: ExplicitAny[] = [];
             await Promise.all(
                 tokens.map(async (t) => {
                     const poolContract = getPoolContract(t.poolAddress);
@@ -152,15 +157,19 @@ function TokensTable() {
                         { text: tvl ? tvl.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '---' },
                         { syncs: formattedSyncs24h, dataKey: dataKey }
                     ]);
-                    newLinks.push(
-                        //`pair/mumbai/${address}/${token0}/${token1}`
-                        ''
-                    );
+                    newLinks.push('/'); // route back to the swap widget
+
+                    // set outbound token as usd and inbound as the row's token
+                    newFunctions.push(() => {
+                        store.setOutboundToken(fUSDCx);
+                        store.setInboundToken(t.token);
+                    });
                 })
             );
 
             setTableData(newData);
             setLinks(newLinks);
+            setFunctions(newFunctions);
             setIsLoading(false);
         }
 
@@ -182,6 +191,7 @@ function TokensTable() {
                     ]}
                     columnComponents={[TokenName, TextField, PercentChangeField, TextField, Graph24h]}
                     rowLinks={links}
+                    rowFunctions={functions}
                     data={tableData}
                     isLoading={isLoading}
                     noDataMessage={"No available tokens"}

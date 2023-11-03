@@ -13,6 +13,10 @@ interface PriceHistoryProps {
     token0?: TokenTypes;
     token1?: TokenTypes;
     startDate?: Date;
+    width?: number | string;
+    height?: number | string;
+    graphPadding?: number;
+    hideTitle?: boolean;
 }
 
 const CustomTooltip = ({ payload, token1 }: { payload: any, token1: TokenTypes | undefined }) => {
@@ -34,7 +38,11 @@ const CustomTooltip = ({ payload, token1 }: { payload: any, token1: TokenTypes |
 const PriceChart = ({
     token0,
     token1,
-    startDate
+    startDate,
+    width,
+    height,
+    graphPadding,
+    hideTitle
 }: PriceHistoryProps) => {
 
     const [currentPrice, setCurrentPrice] = useState<number>(0);
@@ -64,17 +72,6 @@ const PriceChart = ({
     const periodSelect = useRef<string>('1Y');
     //const [swapStartDisplay, setSwapStartDisplay] = useState<number>();
 
-    useEffect(() => {
-        // fetch current price
-        async function fetchCurrentPrice() {
-            const time = Math.floor(Date.now() / 1000).toString();
-            const price = await getPriceAtTime(time);
-            if (price) { setCurrentPrice(price); }
-        }
-
-        fetchCurrentPrice();
-    }, [token0, token1])
-
     async function getPriceAtTime(time: string) {
         if (!token0 || !token1) { return }
             
@@ -101,124 +98,161 @@ const PriceChart = ({
     }
 
     useEffect(() => {
+        // fetch current price
+        async function fetchCurrentPrice() {
+            const time = Math.floor(Date.now() / 1000).toString();
+            const price = await getPriceAtTime(time);
+            if (price) { 
+                setCurrentPrice(price); 
+                return price;
+            }
+        }
+
         async function formatData() {
-            if (data !== undefined) {
-                const currentDate = new Date();
+            if (!data || !token0 || !token1) { return }
 
-                const timePeriodOptions: { [key: string]: number } = {
-                    '1H': currentDate.getTime() - (60 * 60 * 1000),
-                    '1D': currentDate.getTime() - (24 * 60 * 60 * 1000),
-                    '1W': currentDate.getTime() - (7 * 24 * 60 * 60 * 1000),
-                    '1M': new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).getTime(),
-                    '1Y': totalPeriod,
-                };
+            const currentDate = new Date();
 
-                setClosestDate(undefined);
-                minDifferenceRef.current = Infinity;
+            const timePeriodOptions: { [key: string]: number } = {
+                '1H': currentDate.getTime() - (60 * 60 * 1000),
+                '1D': currentDate.getTime() - (24 * 60 * 60 * 1000),
+                '1W': currentDate.getTime() - (7 * 24 * 60 * 60 * 1000),
+                '1M': new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).getTime(),
+                '1Y': totalPeriod,
+            };
 
-                try {
-                    setLoading(true);
-                    let currentIndex = -1;
-                    const newConvertedData: PriceHistory[] = [];
+            setClosestDate(undefined);
+            minDifferenceRef.current = Infinity;
 
-                    data.syncs.forEach((item: {
-                        blockTimestamp: any;
-                        reserve0: { toString: () => string };
-                        reserve1: { toString: () => string };
-                    }) => {
-                        const blockTimestamp = new Date(item.blockTimestamp * 1000);
+            // get pool contract
+            const poolAddress = getPoolAddress(token0.address, token1.address);
+            const poolContract = getPoolContract(poolAddress);
 
-                        const formattedDate = blockTimestamp.toLocaleString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: true
-                        });
+            if (!poolContract) { return }
 
-                        if (blockTimestamp.getTime() >= timePeriodOptions[periodSelect.current]) {
-                            currentIndex++
+            // batch call
+            const readOps = [
+                poolContract.read.token0([]), // get first token in pool
+            ];
+            const [poolToken0] = await Promise.all(readOps);
 
-                            if (startDate) {
-                                const formattedStartDate = Math.floor(startDate.getTime() / 1000).toString();
+            try {
+                setLoading(true);
+                let currentIndex = -1;
+                const newConvertedData: PriceHistory[] = [];
 
-                                if (item.blockTimestamp === formattedStartDate) {
-                                    setClosestDate(currentIndex);
-                                }
-                            }
+                data.syncs.forEach((item: {
+                    blockTimestamp: any;
+                    reserve0: { toString: () => string };
+                    reserve1: { toString: () => string };
+                }) => {
+                    const blockTimestamp = new Date(item.blockTimestamp * 1000);
 
-                            const convertedItem: PriceHistory = {
-                                ...item,
-                                blockTimestamp: formattedDate,
-                                token0Price: parseFloat(ethers.utils.formatEther(item.reserve1.toString())) / parseFloat(ethers.utils.formatEther(item.reserve0.toString())),
-                            };
-
-                            newConvertedData.push(convertedItem);
-                        }
-                    });
-
-                    // if no data, calculate reserves at start of period select and append
-                    if (newConvertedData.length === 0) {
-                        const prevTime = Math.floor(timePeriodOptions[periodSelect.current] / 1000);
-                        const formattedPrevDate = new Date(prevTime * 1000).toLocaleString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: true
-                        });
-                        const prevPrice = await getPriceAtTime(prevTime.toString());
-                        if (prevPrice) {
-                            const prevPriceData = { blockTimestamp: formattedPrevDate, token0Price: prevPrice }
-                            newConvertedData.push(prevPriceData);
-                        }
-                    }
-
-                    // append current price
-                    const formattedCurrentDate = currentDate.toLocaleString('en-US', {
+                    const formattedDate = blockTimestamp.toLocaleString('en-US', {
                         month: 'short',
                         day: 'numeric',
                         hour: 'numeric',
                         minute: 'numeric',
                         hour12: true
                     });
-                    const currentPriceData = { blockTimestamp: formattedCurrentDate, token0Price: currentPrice }
-                    newConvertedData.push(currentPriceData);
 
-                    // calculate where the swap starts in the graph
-                    //const startIndex = closestDate.current ? (closestDate.current > priceHistory.length ? closestDate : 0) : 0; // handle if closestDate out of bounds
-                    /*setSwapStartDisplay(
-                        100 - ((priceHistory.length - startIndex - 1) / (priceHistory.length - 1)) * 100
-                    );*/
+                    if (blockTimestamp.getTime() >= timePeriodOptions[periodSelect.current]) {
+                        currentIndex++
 
-                    setPriceHistory(newConvertedData);
-                    setLoading(false);
-                } catch {
-                    setLoading(false);
+                        if (startDate) {
+                            const formattedStartDate = Math.floor(startDate.getTime() / 1000).toString();
+
+                            if (item.blockTimestamp === formattedStartDate) {
+                                setClosestDate(currentIndex);
+                            }
+                        }
+
+                        let price;
+                        if (token0.address == poolToken0) {
+                            price = parseFloat(ethers.utils.formatEther(item.reserve1.toString())) / parseFloat(ethers.utils.formatEther(item.reserve0.toString()));
+                        } else {
+                            price = parseFloat(ethers.utils.formatEther(item.reserve0.toString())) / parseFloat(ethers.utils.formatEther(item.reserve1.toString()));
+                        }
+
+                        const convertedItem: PriceHistory = {
+                            ...item,
+                            blockTimestamp: formattedDate,
+                            token0Price: price,
+                        };
+
+                        newConvertedData.push(convertedItem);
+                    }
+                });
+
+                // if no data, calculate reserves at start of period select and append
+                if (newConvertedData.length === 0) {
+                    const prevTime = Math.floor(timePeriodOptions[periodSelect.current] / 1000);
+                    const formattedPrevDate = new Date(prevTime * 1000).toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true
+                    });
+                    const prevPrice = await getPriceAtTime(prevTime.toString());
+                    if (prevPrice) {
+                        const prevPriceData = { blockTimestamp: formattedPrevDate, token0Price: prevPrice }
+                        newConvertedData.push(prevPriceData);
+                    }
                 }
+
+                // append current price
+                const newCurrentPrice = await fetchCurrentPrice();
+                const formattedCurrentDate = currentDate.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
+                const currentPriceData = { blockTimestamp: formattedCurrentDate, token0Price: newCurrentPrice ?? 0 }
+                newConvertedData.push(currentPriceData);
+
+                // calculate where the swap starts in the graph
+                //const startIndex = closestDate.current ? (closestDate.current > priceHistory.length ? closestDate : 0) : 0; // handle if closestDate out of bounds
+                /*setSwapStartDisplay(
+                    100 - ((priceHistory.length - startIndex - 1) / (priceHistory.length - 1)) * 100
+                );*/
+
+                setPriceHistory(newConvertedData);
+                setLoading(false);
+            } catch {
+                setLoading(false);
             }
         }
 
         formatData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, startDate, periodSelect.current]);
+    }, [token0, token1, data, startDate, periodSelect.current]);
 
     const type = "monotone";
 
     const swapStartDisplay = 100 - ((priceHistory.length - (closestDate ?? 0) - 1) / (priceHistory.length - 1)) * 100;
 
     return (
-        <div className={`flex items-center justify-center flex-col py-8 sm:px-14 2px-8 mt-5 ${loading ? 'animate-pulse' : ''}`}>
+        <div className={`flex items-center justify-center flex-col sm:px-14 2px-8 ${loading ? 'animate-pulse' : ''}`}>
             <PairTitle
                 token0={token0}
                 token1={token1}
                 currentPrice={currentPrice}
                 period={periodSelect}
+                hideTitle={hideTitle}
             />
-            <div className="flex items-center justify-center w-full py-20">
+            <div 
+                className="flex items-center justify-center w-full"
+                style={{
+                    paddingTop: graphPadding ? graphPadding : '5rem',
+                    paddingBottom: graphPadding ? graphPadding : '5rem',
+                }}
+            >
                 <ResponsiveContainer
-                    width="100%"
-                    height={250}
+                    width={width ? width : "100%"}
+                    height={height ? height : 250}
                 >
                     {
                         priceHistory.length > 0 ?

@@ -356,11 +356,13 @@ const PoolInteractionVisualization: NextPage = () => {
                             <IoArrowBack />
                         </Link>
                     </div>
-                    <PriceChart
-                        token0={token0}
-                        token1={token1}
-                        startDate={startDate}
-                    />
+                    <div className="py-8">
+                        <PriceChart
+                            token0={token0}
+                            token1={token1}
+                            startDate={startDate}
+                        />
+                    </div>
                     {userAddress && token0 && token1 && (
                         <div className="space-y-12 md:space-y-4">
                             <WidgetContainer

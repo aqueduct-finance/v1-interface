@@ -10,6 +10,7 @@ interface GenericTableProps {
     columnProps: string[];
     columnComponents: ((...args: ExplicitAny) => JSX.Element)[];
     rowLinks: string[] | undefined;
+    rowFunctions: (() => void)[];
     data: ExplicitAny[][] | undefined;
     isLoading: boolean;
     noDataMessage?: string;
@@ -22,6 +23,7 @@ const GenericTable = ({
     columnProps,
     columnComponents,
     rowLinks,
+    rowFunctions,
     data,
     isLoading,
     noDataMessage,
@@ -66,6 +68,7 @@ const GenericTable = ({
                         columnProps={columnProps}
                         columnComponents={columnComponents}
                         link={rowLinks ? rowLinks[i] : ""}
+                        rowFunction={rowFunctions ? rowFunctions[i] : () => {}}
                         data={d}
                         // TODO: don't use index as key
                         // eslint-disable-next-line react/no-array-index-key

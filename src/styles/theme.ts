@@ -3,7 +3,7 @@ import { Theme } from 'aqueduct-widget/dist/theme';
 
 const theme: Theme = {
     ...darkTheme,
-    bgColor: '#00000050',
+    bgColor: '#0A101F',
     streamLengthBox: '#ffffff14',
     tokenBox: '#ffffff14',
     useMaxButton: '#ffffff20',

@@ -7,6 +7,7 @@ interface PairTitleProps {
     token1: TokenTypes | undefined;
     currentPrice: number;
     period: MutableRefObject<string>;
+    hideTitle?: boolean;
 }
 
 const timeArray = [
@@ -31,13 +32,15 @@ const PairTitle = ({
     token0,
     token1,
     currentPrice,
-    period
+    period,
+    hideTitle
 }: PairTitleProps) => (
     <div className="w-full">
         {token0 && token1 && (
-            <div className="flex flex-row justify-between items-end flex-wrap">
-                <div className="flex flex-col space-y-3">
-                    <div className="flex flex-row justify-center items-center">
+            <div className="flex flex-col space-y-3">
+                {
+                    !hideTitle &&
+                    <div className="flex flex-row items-center">
                         <div className="flex items-center justify-center text-4xl space-x-3 font-semibold">
                             <p>{token0.underlyingToken?.symbol}</p>
                             <div className="bg-white/25 w-[0.3rem] h-10 rotate-12 rounded-full" />
@@ -52,7 +55,10 @@ const PairTitle = ({
                             </div>
                         </div>
                     </div>
-                    <div className="w-min whitespace-nowrap flex items-center justify-center rounded-xl p-2 px-4 bg-white/5 text-white/50 space-x-2 font-medium">
+                }
+                <div className="flex flex-row justify-between items-center">
+                    
+                    <div className="text-xs md:text-base w-min whitespace-nowrap flex items-center justify-center rounded-xl p-2 px-4 bg-white/5 text-white/50 space-x-2 font-medium">
                         <p>
                             1 {token0.underlyingToken?.symbol}
                         </p>
@@ -63,18 +69,18 @@ const PairTitle = ({
                             {currentPrice.toFixed(3)} {token1.underlyingToken?.symbol}
                         </p>
                     </div>
-                </div>
-                <div className="flex p-1 ml-9 mt-6 sm:mt-0 sm:ml-0 space-x-1">
-                    {timeArray.map((item, i) => (
-                        <div className={`${period.current === item.text ? "bg-aqueductBlue/50 outline outline-2 outline-aqueductBlue text-white" : "bg-transparent text-white/50"} py-1 px-1 flex items-center justify-center rounded-xl w-[40px] cursor-pointer duration-100 ease-in-out`}
-                            key={i}
-                            onClick={() => {
-                                period.current = item.text;
-                            }}
-                        >
-                            <h1 className="rounded-full font-semibold">{item.text}</h1>
-                        </div>
-                    ))}
+                    <div className="text-xs md:text-base flex space-x-1">
+                        {timeArray.map((item, i) => (
+                            <div className={`${period.current === item.text ? "bg-aqueductBlue/50 outline outline-2 outline-aqueductBlue text-white" : "bg-transparent text-white/50"} py-1 px-2 flex items-center justify-center rounded-xl cursor-pointer duration-100 ease-in-out`}
+                                key={i}
+                                onClick={() => {
+                                    period.current = item.text;
+                                }}
+                            >
+                                <h1 className="rounded-full font-semibold">{item.text}</h1>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         )}

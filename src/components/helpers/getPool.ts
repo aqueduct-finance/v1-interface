@@ -4,22 +4,17 @@ import {
 } from "../../utils/constants"
 
 const getPoolAddress = (outboundToken: string, inboundToken: string) => {
-    let pool: string;
-
     switch (true) {
         case inboundToken === Address.fDAIx && outboundToken === Address.fUSDCx:
-            pool = fDAIxfUSDCxPool;
-            break;
+            return fDAIxfUSDCxPool;
         case inboundToken === Address.fUSDCx && outboundToken === Address.fDAIx:
-            pool = fDAIxfUSDCxPool;
-            break;
+            return fDAIxfUSDCxPool;
         default:
-            throw new Error(
+            return undefined;
+            /*throw new Error(
                 `Pool not found for tokens "${outboundToken}" and "${inboundToken}"`
-            );
+            );*/
     }
-
-    return pool;
 };
 
 export default getPoolAddress;

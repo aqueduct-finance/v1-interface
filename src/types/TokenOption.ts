@@ -1,6 +1,6 @@
 export type TokenTypes = {
     name: string;
-    address: string;
+    address: `0x${string}`;
     symbol: string;
     decimals: number;
     chainId: number;
