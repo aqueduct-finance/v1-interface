@@ -20,6 +20,7 @@ import { ethers } from "ethers";
 import { fDAIx, fUSDCx } from "../../utils/tokens";
 import { TokenTypes } from "../../types/TokenOption";
 import { useWidgetStore } from "aqueduct-widget";
+import WidgetContainer from "../widgets/WidgetContainer";
 
 function TokensTable() {
     const provider = useEthersProvider();
@@ -179,24 +180,25 @@ function TokensTable() {
     return (
         <section className="flex flex-col items-center w-full pb-64">
             <div className="w-full max-w-6xl px-4">
-                <GenericTable
-                    title="Tokens"
-                    labels={["Token Name", "Price", "Change", "TVL", ""]}
-                    columnProps={[
-                        "min-w-[16rem] max-w-[20rem]",
-                        "min-w-0 max-w-[20rem] lg:min-w-[10rem]",
-                        "min-w-[10rem] max-w-[20rem] hidden lg:flex",
-                        "min-w-[12rem] max-w-[20rem] hidden lg:flex",
-                        "min-w-[12rem] w-full max-w-[20rem] pr-12 hidden lg:block"
-                    ]}
-                    columnComponents={[TokenName, TextField, PercentChangeField, TextField, Graph24h]}
-                    rowLinks={links}
-                    rowFunctions={functions}
-                    data={tableData}
-                    isLoading={isLoading}
-                    noDataMessage={"No available tokens"}
-                    rowProps="py-6"
-                />
+                <WidgetContainer padding="md:p-5 md:pb-8" title='Tokens' isUnbounded>
+                    <GenericTable
+                        labels={["Token Name", "Price", "Change", "TVL", ""]}
+                        columnProps={[
+                            "min-w-[16rem] max-w-[20rem]",
+                            "min-w-0 max-w-[20rem] lg:min-w-[10rem]",
+                            "min-w-[10rem] max-w-[20rem] hidden lg:flex",
+                            "min-w-[12rem] max-w-[20rem] hidden lg:flex",
+                            "min-w-[12rem] w-full max-w-[20rem] pr-12 hidden lg:block"
+                        ]}
+                        columnComponents={[TokenName, TextField, PercentChangeField, TextField, Graph24h]}
+                        rowLinks={links}
+                        rowFunctions={functions}
+                        data={tableData}
+                        isLoading={isLoading}
+                        noDataMessage={"No available tokens"}
+                        rowProps="py-6"
+                    />
+                </WidgetContainer>
             </div>
         </section>
     );

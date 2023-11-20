@@ -5,7 +5,6 @@ import TableRow from "./TableRow";
 import theme from "../../styles/theme";
 
 interface GenericTableProps {
-    title: string;
     labels: string[];
     columnProps: string[];
     columnComponents: ((...args: ExplicitAny) => JSX.Element)[];
@@ -18,7 +17,6 @@ interface GenericTableProps {
 }
 
 const GenericTable = ({
-    title,
     labels,
     columnProps,
     columnComponents,
@@ -29,7 +27,7 @@ const GenericTable = ({
     noDataMessage,
     rowProps
 }: GenericTableProps) => (
-    <WidgetContainer padding="md:p-5 md:pb-8" title={title} isUnbounded>
+    <>
         <div className="flex px-4 text-white font-semibold">
             {labels.map((label, i) => (
                 <div 
@@ -91,7 +89,7 @@ const GenericTable = ({
                 </div>
             }</>
         )}
-    </WidgetContainer>
+    </>
 );
 
 export default GenericTable;

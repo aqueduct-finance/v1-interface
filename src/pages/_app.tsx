@@ -5,7 +5,6 @@ import { WagmiConfig, createConfig } from "wagmi";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
 import { polygonMumbai } from "wagmi/chains";
 import NavBar from '../components/NavBar';
-import { createPublicClient, http } from 'viem';
 
 const chains = [polygonMumbai]
 

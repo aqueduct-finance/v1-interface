@@ -4,17 +4,16 @@ import { TokenTypes } from "../../types/TokenOption";
 import BalanceField from "../BalanceField";
 import DetailsDisplay from "../streamview/DetailsDisplay";
 import AveragePrice from "../streamview/AveragePrice";
+import Image from 'next/image';
+import { useStore } from "../../store";
+import { RetrieveFundsModalPage } from "../../types/RetrieveFundsModalState";
 
 interface TotalAmountsStreamedWidgetProps {
     flowRate0: BigNumber;
-    flowRate1: BigNumber;
-    twapFlowRate0: BigNumber;
     twapFlowRate1: BigNumber;
     currentBalance0: BigNumber;
-    currentBalance1: BigNumber;
     token0: TokenTypes;
     token1: TokenTypes;
-    currentTwapBalance0: BigNumber;
     currentTwapBalance1: BigNumber;
     isLoading: boolean;
     startDate: Date | undefined;
@@ -24,14 +23,10 @@ interface TotalAmountsStreamedWidgetProps {
 
 const TotalAmountsStreamedWidget = ({
     flowRate0,
-    flowRate1,
-    twapFlowRate0,
     twapFlowRate1,
     currentBalance0,
-    currentBalance1,
     token0,
     token1,
-    currentTwapBalance0,
     currentTwapBalance1,
     isLoading,
     startDate,
@@ -46,9 +41,11 @@ const TotalAmountsStreamedWidget = ({
         return 19 - flowRateDigitCount - oneOrZero;
     };
 
+    const store = useStore();
+
     return (
         <div className="md:space-y-6 lg:space-y-10">
-            <div className="sm:space-y-4 space-y-2 md:pb-0 pb-6">
+            <div className="sm:space-y-4 space-y-2 md:pb-0 pb-6 flex flex-col">
                 {flowRate0.gt(0) && (
                     <BalanceField
                         currentBalance={currentBalance0}
@@ -71,6 +68,25 @@ const TotalAmountsStreamedWidget = ({
                         isLoading={isLoading}
                     />
                 )}
+            </div>
+            <div className="flex items-center justify-center md:pb-0 pb-6">
+                <button 
+                    className="flex space-x-2 items-center justify-center text-white bg-white/10 px-6 py-2 rounded-xl opacity-80 hover:opacity-100 hover:scale-[1.01] transition-all duration-300"
+                    onClick={() => {
+                        
+                    }}
+                >
+                    <p>
+                        {`Collect swapped ${token1.symbol}`}
+                    </p>
+                    <Image
+                        src={token1.logoURI}
+                        className="drop-shadow-md"
+                        width="16"
+                        height="16"
+                        alt={token1.name}
+                    />
+                </button>
             </div>
             <div className="w-full flex sm:flex-nowrap flex-wrap 2grid 2grid-cols-2 2gap-2 sm:space-x-2 space-x-0 space-y-2 sm:space-y-0"
             >

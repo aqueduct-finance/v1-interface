@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { TokenTypes } from "../../types/TokenOption";
+import { FaArrowRight } from "react-icons/fa6";
 
 function PoolField({
     token0,
@@ -26,9 +27,9 @@ function PoolField({
                 <Image src={token1.logoURI} width="28" height="28" alt={token1.name} />
             </div>
 
-            <div className="flex text-sm pl-4 space-x-1 monospace-font font-semibold">
+            <div className="flex text-sm pl-4 space-x-1 monospace-font font-semibold items-center">
                 <p>{token0.symbol}</p>
-                <p>/</p>
+                <FaArrowRight size={10} />
                 <p>{token1.symbol}</p>
             </div>
         </div>

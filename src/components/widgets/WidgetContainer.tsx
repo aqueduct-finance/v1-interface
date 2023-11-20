@@ -19,8 +19,6 @@ interface WidgetContainerProps {
     isUnbounded?: boolean;
     userAddress?: string | undefined
     address?: `0x${string}` | undefined
-    isTwap0?: boolean;
-    isTwap1?: boolean;
     isLoading?: boolean;
     isDeleting?: boolean;
     setOutboundAndInboundTokens?: () => void;
@@ -36,8 +34,6 @@ const WidgetContainer = ({
     isUnbounded,
     userAddress,
     address,
-    isTwap0,
-    isTwap1,
     isLoading,
     isDeleting,
     setOutboundAndInboundTokens,
@@ -99,11 +95,7 @@ const WidgetContainer = ({
                             button={
                                 <Link
                                     legacyBehavior
-                                    href={
-                                        isTwap0 && isTwap1
-                                            ? "/provide-liquidity"
-                                            : "/"
-                                    }
+                                    href='/'
                                 >
                                     {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions, jsx-a11y/anchor-is-valid */}
                                     <a

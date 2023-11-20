@@ -22,7 +22,7 @@ function NavBar() {
 
     return (
         <>
-            <div className="w-full flex justify-center sticky top-0 z-50 backdrop-blur-xl bg-black/20">
+            <div className="w-full flex justify-center sticky top-0 z-40 backdrop-blur-xl bg-black/20">
                 <div
                     className='max-w-screen-2xl flex w-full items-center justify-between px-4 py-2 md:px-6 md:pt-4 md:pb-2 lg:px-8 lg:pt-6 lg:pb-4 overflow-hidden'
                 >
