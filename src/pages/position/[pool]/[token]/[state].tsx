@@ -68,6 +68,7 @@ const Position: NextPage = () => {
     // component state
     const [isLoading, setIsLoading] = useState(true);
     const [positionFound, setPositionFound] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string>();
 
     // transaction status
     const [isCancelling, setIsCancelling] = useState(false);
@@ -82,6 +83,9 @@ const Position: NextPage = () => {
             setIsLoading(true);
 
             try {
+                // wait for router to load
+                if (!router.query.pool) { return; }
+
                 // check params
                 if (
                     typeof router.query.pool !== "string" ||
@@ -253,6 +257,8 @@ const Position: NextPage = () => {
 
             router.push(`/position/${poolContract.address}/${token1.address}/${RetrieveFundsState.COLLECT_FUNDS}`);
         } catch (error) {
+            const message = error instanceof Error ? error.message : 'Unexpected error.';
+            setErrorMessage(message);
             setIsCancelling(false);
         }
     };
@@ -289,7 +295,9 @@ const Position: NextPage = () => {
             router.push(`/position/${writePoolContract.address}/${token1.address}/${RetrieveFundsState.UNWRAP_TOKENS}`);
 
             setIsCollecting(false);
-        } catch {
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Unexpected error.';
+            setErrorMessage(message);
             setIsCollecting(false);
         }
     }
@@ -308,12 +316,42 @@ const Position: NextPage = () => {
 
             router.push(`/position/${writePoolContract.address}/${token1.address}/${RetrieveFundsState.DONE}`);
             setIsUnwrapping(false);
-        } catch {
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Unexpected error.';
+            setErrorMessage(message);
             setIsUnwrapping(false);
         }
     }
 
     function getContent(): React.ReactNode {
+        if (errorMessage && errorMessage != '') {
+            return (
+                <div className='space-y-2 pt-4'>
+                    <div className='text-sm flex px-8 py-6 rounded-xl bg-red-500/10 items-center justify-between text-red-300/50'>
+                        <div className='break-all max-h-48 overflow-hidden'>
+                            {`error: ${errorMessage}`}
+                        </div>
+                    </div>
+                    <div className='pt-8'>
+                        <button 
+                            className='w-full h-16 flex items-center justify-center bg-white/5 hover:bg-white/10 border-white/5 border-2 space-x-2 transition-all duration-300'
+                            style={{
+                                borderRadius: theme.swapButtonRadius,
+                                color: theme.primaryText,
+                                fontSize: theme.swapButtonFontSize
+                            }}
+                            onClick={() => {
+                                setErrorMessage(undefined);
+                            }}
+                        >
+                            <FaChevronLeft size={15} className='text-white/40 -ml-4' />
+                            <p>Try again</p>
+                        </button>
+                    </div>
+                </div>
+            )
+        }
+
         if (state === RetrieveFundsState.CANCEL_SWAP) {
             return (
                 <div className='space-y-2'>
@@ -544,7 +582,7 @@ const Position: NextPage = () => {
                     </div>
                     <div className='pt-8'>
                         <button 
-                            className='w-full h-16 flex items-center justify-center bg-white/5 hover:bg-white/10 border-white/5 border-2 space-x-2'
+                            className='w-full h-16 flex items-center justify-center bg-white/5 hover:bg-white/10 border-white/5 border-2 space-x-2 transition-all duration-300'
                             style={{
                                 borderRadius: theme.swapButtonRadius,
                                 color: theme.primaryText,
@@ -567,11 +605,6 @@ const Position: NextPage = () => {
         <div className='flex flex-col 2xl:flex-row 2xl:space-x-8 w-full items-center 2xl:justify-center'>
             {isLoading || (!isLoading && positionFound) ? (
                 <WidgetContainer
-                    /*smallTitle={
-                        state === RetrieveFundsState.CANCEL_SWAP ? 'Cancel Swap' :
-                        state === RetrieveFundsState.COLLECT_FUNDS ? 'Collect Funds' :
-                        state === RetrieveFundsState.UNWRAP_TOKENS ? 'Unwrap Tokens' : ''
-                    }*/
                     userAddress={address}
                     address={address}
                     isLoading={isLoading}
@@ -587,6 +620,7 @@ const Position: NextPage = () => {
                         }
                         <div className="pl-1 pr-4 py-5 flex items-center sm:text-lg text-sm font-semibold w-min text-white whitespace-nowrap">
                             {
+                                errorMessage && errorMessage != '' ? 'Unexpected error' :
                                 state === RetrieveFundsState.CANCEL_SWAP ? 'Cancel Swap' :
                                 state === RetrieveFundsState.COLLECT_FUNDS ? 'Collect Funds' :
                                 state === RetrieveFundsState.UNWRAP_TOKENS ? 'Unwrap Tokens' : ''
