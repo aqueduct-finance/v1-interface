@@ -5,8 +5,8 @@ import BalanceField from "../BalanceField";
 import DetailsDisplay from "../streamview/DetailsDisplay";
 import AveragePrice from "../streamview/AveragePrice";
 import Image from 'next/image';
-import { useStore } from "../../store";
-import { RetrieveFundsModalPage } from "../../types/RetrieveFundsModalState";
+import { useRouter } from "next/router";
+import RetrieveFundsState from "../../types/RetrieveFundsState";
 
 interface TotalAmountsStreamedWidgetProps {
     flowRate0: BigNumber;
@@ -19,6 +19,7 @@ interface TotalAmountsStreamedWidgetProps {
     startDate: Date | undefined;
     endDate: Date | undefined;
     price: number;
+    poolAddress: string | undefined;
 }
 
 const TotalAmountsStreamedWidget = ({
@@ -31,7 +32,8 @@ const TotalAmountsStreamedWidget = ({
     isLoading,
     startDate,
     endDate,
-    price
+    price,
+    poolAddress
 }: TotalAmountsStreamedWidgetProps) => {
     const getNumerOfDecimals = (flowRate: BigNumber) => {
         const flowRateDigitCount = flowRate.toString().length;
@@ -41,7 +43,7 @@ const TotalAmountsStreamedWidget = ({
         return 19 - flowRateDigitCount - oneOrZero;
     };
 
-    const store = useStore();
+    const router = useRouter();
 
     return (
         <div className="md:space-y-6 lg:space-y-10">
@@ -73,7 +75,9 @@ const TotalAmountsStreamedWidget = ({
                 <button 
                     className="flex space-x-2 items-center justify-center text-white bg-white/10 px-6 py-2 rounded-xl opacity-80 hover:opacity-100 hover:scale-[1.01] transition-all duration-300"
                     onClick={() => {
-                        
+                        if (!poolAddress) { return; }
+
+                        router.push(`/position/${poolAddress}/${token1.address}/${RetrieveFundsState.COLLECT_FUNDS}`);
                     }}
                 >
                     <p>

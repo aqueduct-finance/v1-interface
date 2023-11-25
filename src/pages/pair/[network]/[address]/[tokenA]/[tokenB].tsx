@@ -29,6 +29,7 @@ import { decodeGetFlowRes } from "../../../../../components/helpers/decodeGetFlo
 import { decodeGetReservesAtTimeRes } from "../../../../../components/helpers/decodeGetReservesAtTimeRes";
 import poolABI from "../../../../../utils/poolABI";
 import getPoolContract from "../../../../../components/helpers/getPoolContract";
+import RetrieveFundsState from "../../../../../types/RetrieveFundsState";
 
 const ANIMATION_MINIMUM_STEP_TIME = 10;
 const REFRESH_INTERVAL = 3000; // 300 * 100 = 30000 ms = 30 s
@@ -41,7 +42,6 @@ const PoolInteractionVisualization: NextPage = () => {
     const provider = useEthersProvider();
     const { chain } = useNetwork(); // TODO: use router param
     const { address } = useAccount();
-    const signer = useEthersSigner();
 
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -230,77 +230,6 @@ const PoolInteractionVisualization: NextPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userAddress, chain, provider, token0, token1, poolAddress]);
 
-    const cancelStream = async () => {
-        let transactionHash;
-        let result;
-        try {
-            if (!token0 || !token1 || !address || !userAddress || address !== userAddress) { return; }
-            
-            const poolAddress = getPoolAddress(token0.address, token1.address);
-            const poolContract = getPoolContract(poolAddress);
-
-            if (!poolAddress || !poolContract) { return; }
-
-            const superfluid = await Framework.create({
-                chainId: mumbaiChainId,
-                provider,
-            });
-
-            // setup batch call
-            const operations: Operation[] = [];
-
-            // delete flow of token0
-            const deleteFlow = superfluid.cfaV1.deleteFlow({
-                sender: address,
-                receiver: poolAddress,
-                superToken: token0.address,
-            });
-            operations.push(deleteFlow);
-
-            // retrieve funds of token1
-            const poolInteface = new ethers.utils.Interface(poolABI);
-            const callData = poolInteface.encodeFunctionData("retrieveFunds", [token1.address]);
-            const retrieveFunds = superfluid.host.callAppAction(poolAddress, callData);
-            operations.push(retrieveFunds);
-
-            if (signer) {
-                retrieveFunds.exec(signer);
-                return;
-            }
-
-            // if selected, unwrap token1
-            const lockedBalances = await poolContract.read.getRealTimeUserBalances([userAddress]);
-            const decodedLockedBalances = decodeGetUserBalancesAtTimeRes(lockedBalances);
-            const superToken = (await superfluid.loadSuperToken(token1.address)) as WrapperSuperToken;
-            const unwrapTokens = superToken.downgrade({ amount: decodedLockedBalances.balance1.toString() });
-            operations.push(unwrapTokens);
-
-            // batch call
-            const batchCall = superfluid.batchCall(operations);
-            setIsDeleting(true);
-            // new signer object (Wagmi Update) requires new config, checking undefined
-            if (signer) {
-                result = await batchCall.exec(signer);
-            } else {
-                return;
-            }
-
-            transactionHash = result.hash;
-            const transactionReceipt = await result.wait();
-            setIsDeleting(false);
-
-            router.push("/my-streams");
-            showTransactionConfirmedToast(
-                "Deleted stream",
-                transactionReceipt.transactionHash
-            );
-        } catch (error) {
-            console.log(error)
-            getErrorToast(error, transactionHash);
-            setIsDeleting(false);
-        }
-    };
-
     const setOutboundAndInboundTokens = () => {
         if (token0 && token1) {
             // set swap tokens to this pool's tokens
@@ -338,7 +267,11 @@ const PoolInteractionVisualization: NextPage = () => {
                                 isLoading={isLoading}
                                 isDeleting={isDeleting}
                                 setOutboundAndInboundTokens={setOutboundAndInboundTokens}
-                                cancelStream={cancelStream}
+                                cancelStream={() => {
+                                    if (!poolAddress) { return; }
+
+                                    router.push(`/position/${poolAddress}/${token1.address}/${RetrieveFundsState.CANCEL_SWAP}`);
+                                }}
                                 padding="md:p-2"
                             >
                                 <TotalAmountsStreamedWidget
@@ -352,6 +285,7 @@ const PoolInteractionVisualization: NextPage = () => {
                                     startDate={startDate}
                                     endDate={startDate}
                                     price={averagePrice}
+                                    poolAddress={poolAddress}
                                 />
                             </WidgetContainer>
                         </div>

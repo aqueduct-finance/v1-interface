@@ -1,8 +1,14 @@
 import Image from "next/image";
 import LockedBalance from "../../types/LockedBalance";
 import theme from "../../styles/theme";
+import { useRouter } from "next/router";
+import RetrieveFundsState from "../../types/RetrieveFundsState";
+import getPoolAddress from "../helpers/getPool";
 
 const LockedBalancesList = ({lockedBalances}: {lockedBalances: LockedBalance[]}) => {
+
+    const router = useRouter();
+
     return (
         <div className="text-white space-y-3">
             {
@@ -26,6 +32,9 @@ const LockedBalancesList = ({lockedBalances}: {lockedBalances: LockedBalance[]})
                                     style={{
                                         //background: theme.swapButton,
                                         borderRadius: `calc(${theme.secondaryBorderRadius} - 0.5rem)`,
+                                    }}
+                                    onClick={() => {
+                                        router.push(`/position/${getPoolAddress(b.sentToken.address, b.receivedToken.address)}/${b.receivedToken.address}/${RetrieveFundsState.COLLECT_FUNDS}`);
                                     }}
                                 >
                                     <p>

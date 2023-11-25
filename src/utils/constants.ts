@@ -4,7 +4,7 @@ export const ETHxpfDAIxpPool = "0x1";
 
 export const fDAIxpETHxpPool = "0x2";
 
-export const fDAIxfUSDCxPool = "0x0794c89b0767d480965574Af38052aab32496E00";
+export const fDAIxfUSDCxPool = "0xB7b2DC80e7EB6323C6E46294B7d066F72f7C19Cc";
 
 export const fDAI = "0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7";
 
