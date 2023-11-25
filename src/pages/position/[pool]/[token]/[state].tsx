@@ -4,18 +4,13 @@ import WidgetContainer from '../../../../components/widgets/WidgetContainer';
 import { useRouter } from 'next/router';
 import { TokenTypes } from '../../../../types/TokenOption';
 import { useAccount, useNetwork } from 'wagmi';
-import useCFA from '../../../../components/helpers/useCFA';
 import { useEthersProvider } from '../../../../components/providers/provider';
-import { ExplicitAny } from '../../../../types/ExplicitAny';
-import LockedBalance from '../../../../types/LockedBalance';
 import getToken from '../../../../utils/getToken';
 import { mumbaiChainId } from '../../../../utils/constants';
 import getWriteablePoolContract from '../../../../components/helpers/getWriteablePoolContract';
-import { GetContractReturnType, parseAbiItem } from 'viem';
+import { Abi, Address, GetContractReturnType, PublicClient, WalletClient, parseAbiItem } from "viem";
 import { BigNumber, ethers } from 'ethers';
-import { decodeGetFlowRes } from '../../../../components/helpers/decodeGetFlowRes';
 import { decodeGetUserBalancesAtTimeRes } from '../../../../components/helpers/decodeGetUserBalancesAtTimeRes';
-import TotalAmountsStreamedWidget from '../../../../components/widgets/TotalAmountsStreamedWidget';
 import RetrieveFundsState from '../../../../types/RetrieveFundsState';
 import Image from 'next/image';
 import { FaArrowRight, FaChevronLeft } from 'react-icons/fa6';
@@ -38,8 +33,8 @@ const Position: NextPage = () => {
 
     // url params
     const router = useRouter();
-    const [writePoolContract, setWritePoolContract] = useState<GetContractReturnType>();
-    const [poolContract, setPoolContract] = useState<GetContractReturnType>();
+    const [writePoolContract, setWritePoolContract] = useState<GetContractReturnType<Abi, PublicClient, WalletClient, Address>>();
+    const [poolContract, setPoolContract] = useState<GetContractReturnType<Abi, PublicClient, WalletClient, Address>>();
     const [isToken0, setIsToken0] = useState<boolean>();
     const signer = useEthersSigner();
 
@@ -118,8 +113,8 @@ const Position: NextPage = () => {
                 setPoolContract(pool);
                 setWritePoolContract(writeablePool);
 
-                const token0Address: string = await pool.read.token0();
-                const token1Address: string = await pool.read.token1();
+                const token0Address: string = await pool.read.token0() as string;
+                const token1Address: string = await pool.read.token1() as string;
                 if (!token0Address || !token1Address || (token0Address !== router.query.token && token1Address !== router.query.token)) {
                     setPositionFound(false);
                     setIsLoading(false);
@@ -235,7 +230,7 @@ const Position: NextPage = () => {
 
     const cancelStream = async () => {
         try {
-            if (!token0 || !token1 || !address || !poolContract) { return; }
+            if (!token0 || !token1 || !address || !poolContract || !signer) { return; }
 
             setIsCancelling(true);
 

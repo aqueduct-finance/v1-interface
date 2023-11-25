@@ -1,9 +1,9 @@
-import { getContract, WalletClient } from "viem";
+import { Abi, Address, getContract, GetContractReturnType, PublicClient, WalletClient } from "viem";
 import { getWalletClient } from '@wagmi/core'
 import { useEffect, useState } from "react";
 
 const useWriteableSuperToken = (tokenAddress: string | undefined) => {
-    const [contract, setContract] = useState();
+    const [contract, setContract] = useState<GetContractReturnType<Abi, PublicClient, WalletClient, Address>>();
     const [walletClient, setWalletClient] = useState<WalletClient>();
 
     useEffect(() => {
@@ -50,7 +50,7 @@ const useWriteableSuperToken = (tokenAddress: string | undefined) => {
                 address: tokenAddress as `0x${string}`,
                 abi: superTokenABI,
                 walletClient,
-            });
+            }) as GetContractReturnType<Abi, PublicClient, WalletClient, Address>;
 
             setContract(newContract);
         }

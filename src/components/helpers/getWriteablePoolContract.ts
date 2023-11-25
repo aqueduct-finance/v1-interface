@@ -1,4 +1,4 @@
-import { getContract, WalletClient } from "viem";
+import { Abi, Address, getContract, GetContractReturnType, PublicClient, WalletClient } from "viem";
 import { getWalletClient } from '@wagmi/core'
 import poolABI from "../../utils/poolABI";
 
@@ -15,7 +15,7 @@ const getWriteablePoolContract = async (poolAddress: string | undefined) => {
         address: poolAddress as `0x${string}`,
         abi: poolABI,
         walletClient: walletClient,
-    });
+    }) as GetContractReturnType<Abi, PublicClient, WalletClient, Address>;
 
     return contract;
 }
