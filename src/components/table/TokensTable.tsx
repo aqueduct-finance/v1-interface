@@ -13,7 +13,7 @@ import useCFA from "../helpers/useCFA";
 import { decodeGetFlowRes } from "../helpers/decodeGetFlowRes";
 import getPoolContract from "../helpers/getPoolContract";
 import { decodeGetReservesRes } from "../helpers/decodeGetReservesRes";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useApolloClient } from "@apollo/client";
 import PercentChangeField from "./PercentChangeField";
 import Graph24h from "./Graph24h";
 import { ethers } from "ethers";
@@ -21,6 +21,7 @@ import { fDAIx, fUSDCx } from "../../utils/tokens";
 import { TokenTypes } from "../../types/TokenOption";
 import { useWidgetStore } from "aqueduct-widget";
 import WidgetContainer from "../widgets/WidgetContainer";
+import getPoolAddress from "../helpers/getPool";
 
 function TokensTable() {
     const provider = useEthersProvider();
@@ -36,18 +37,7 @@ function TokensTable() {
 
     const [isLoading, setIsLoading] = useState(true);
 
-    const GET_DATA = gql`
-        {
-            syncs(first: 500, orderBy: blockTimestamp, orderDirection: asc) {
-            id
-            reserve0
-            reserve1
-            blockTimestamp
-            }
-        }
-    `;
-
-    const { error, data } = useQuery(GET_DATA);
+    const apolloClient = useApolloClient();
 
     // binary search to find closest timestamp to 24h ago (for % change calc)
     function findClosestTimestamp(arr: Sync[], targetTimestamp: number) {
@@ -69,10 +59,6 @@ function TokensTable() {
 
     useEffect(() => {
         async function updateData() {
-            if (!data) {
-                return;
-            }
-
             const tokens: {token: TokenTypes, poolAddress: string}[] = [
                 { token: fUSDCx, poolAddress: fDAIxfUSDCxPool },
                 { token: fDAIx, poolAddress: fDAIxfUSDCxPool }
@@ -100,10 +86,29 @@ function TokensTable() {
                     const decodedReserves = decodeGetReservesRes(reserves);
                     const decodedFlowParams = flowParams && decodeGetFlowRes(flowParams); // TODO: use to show if position is active?
  
-                    // TODO: need to query subgraph data from each pool
+                    // get syncs from subgraph
+                    const GET_DATA = gql`
+                        {
+                            pool(id: "${t.poolAddress}") {
+                                syncs(first: 500, orderBy: blockTimestamp, orderDirection: asc) {
+                                    blockTimestamp
+                                    id
+                                    reserve0
+                                    reserve1
+                                }
+                            }
+                        }
+                    `;
+
+                    const { data } = await apolloClient.query({
+                        query: GET_DATA,
+                    });
+
+                    if (!data || !data.pool || !data.pool.syncs) { return; }
+
                     // find sync from ~24h ago
                     const targetTimestamp24h = decodedReserves.time - (3600 * 24);
-                    const data24h = findClosestTimestamp(data.syncs, targetTimestamp24h);
+                    const data24h = findClosestTimestamp(data.pool.syncs, targetTimestamp24h);
                     const sync24h = data24h.sync;
 
                     // calc price, 24h change, and TVL
@@ -136,7 +141,7 @@ function TokensTable() {
                     }
 
                     // slice syncs for 24h display and add most recent datapoint
-                    const syncs24h = data.syncs.slice(data24h.index);
+                    const syncs24h = data.pool.syncs.slice(data24h.index);
                     const formattedSyncs24h = [];
                     syncs24h.forEach((s: SyncQuery) => {
                         formattedSyncs24h.push({
@@ -175,7 +180,7 @@ function TokensTable() {
         }
 
         updateData();
-    }, [address, chain, provider, data]);
+    }, [address, chain, provider]);
 
     return (
         <section className="flex flex-col items-center w-full pb-64">
