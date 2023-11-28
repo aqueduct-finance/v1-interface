@@ -16,10 +16,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     getDefaultConfig({
       alchemyId: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
       walletConnectProjectId: walletConnectProjectId,
-      /*publicClient: createPublicClient({
-        chain: polygonMumbai,
-        transport: http()
-      }),*/
       appName: "Aqueduct",
       chains
     }),

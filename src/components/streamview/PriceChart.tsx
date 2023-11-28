@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, Label, Responsiv
 import { TokenTypes } from "../../types/TokenOption";
 import { PriceHistory } from "../../types/PriceHistory";
 import PairTitle from "./PairTitle";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useQuery } from "@apollo/client";
 import getPoolContract from "../helpers/getPoolContract";
 import getPoolAddress from "../helpers/getPool";
 import { ethers } from "ethers";
@@ -51,20 +51,7 @@ const PriceChart = ({
 
     const totalPeriod = new Date(currentDate.getFullYear() - 1, currentDate.getMonth()).getTime();
 
-    const GET_DATA = gql`
-        {
-            pool(id: "${getPoolAddress(token0?.address ?? '', token1?.address ?? '')}") {
-                syncs(first: 500, orderBy: blockTimestamp, orderDirection: asc) {
-                    blockTimestamp
-                    id
-                    reserve0
-                    reserve1
-                }
-            }
-        }
-    `;
-
-    const { error, data } = useQuery(GET_DATA);
+    const apolloClient = useApolloClient();
 
     const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
     const minDifferenceRef = useRef(Infinity);
@@ -77,7 +64,7 @@ const PriceChart = ({
     async function getPriceAtTime(time: string) {
         if (!token0 || !token1) { return }
             
-        const poolAddress = getPoolAddress(token0.address, token1.address);
+        const poolAddress = await getPoolAddress(token0.address, token1.address);
         const poolContract = getPoolContract(poolAddress);
 
         if (!poolContract) { return }
@@ -111,7 +98,27 @@ const PriceChart = ({
         }
 
         async function formatData() {
-            if (!data || !token0 || !token1) { return }
+            if (!token0 || !token1) { return }
+
+            const poolAddress = await getPoolAddress(token0.address, token1.address);
+            if (!poolAddress) { return; }
+            const GET_DATA = gql`
+                {
+                    pool(id: "${poolAddress.toLowerCase()}") {
+                        syncs(first: 500, orderBy: blockTimestamp, orderDirection: asc) {
+                            blockTimestamp
+                            id
+                            reserve0
+                            reserve1
+                        }
+                    }
+                }
+            `;
+
+            const { data } = await apolloClient.query({
+                query: GET_DATA,
+            });
+            if (!data) { return; }
 
             const currentDate = new Date();
 
@@ -127,7 +134,6 @@ const PriceChart = ({
             minDifferenceRef.current = Infinity;
 
             // get pool contract
-            const poolAddress = getPoolAddress(token0.address, token1.address);
             const poolContract = getPoolContract(poolAddress);
 
             if (!poolContract) { return }
@@ -230,7 +236,7 @@ const PriceChart = ({
 
         formatData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token0, token1, data, startDate, periodSelect.current]);
+    }, [token0, token1, startDate, periodSelect.current]);
 
     const type = "monotone";
 

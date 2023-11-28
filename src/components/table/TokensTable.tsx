@@ -4,7 +4,6 @@ import { useAccount, useNetwork } from "wagmi";
 import { useEthersProvider } from "../providers/provider";
 import BalancesField from "./BalancesField";
 import GenericTable from "./GenericTable";
-import { fDAIxfUSDCxPool } from "../../utils/constants";
 import getToken from "../../utils/getToken";
 import TextField from "./TextField";
 import TokenName from "./TokenName";
@@ -17,11 +16,13 @@ import { gql, useApolloClient } from "@apollo/client";
 import PercentChangeField from "./PercentChangeField";
 import Graph24h from "./Graph24h";
 import { ethers } from "ethers";
-import { fDAIx, fUSDCx } from "../../utils/tokens";
+import { findToken, whitelistedTokens } from "../../utils/whitelistedTokens";
 import { TokenTypes } from "../../types/TokenOption";
 import { useWidgetStore } from "aqueduct-widget";
 import WidgetContainer from "../widgets/WidgetContainer";
 import getPoolAddress from "../helpers/getPool";
+import { getDefaultWhitelistedPools } from "../../utils/whitelistedPools";
+import { getDefaultAddresses } from "../../utils/constants";
 
 function TokensTable() {
     const provider = useEthersProvider();
@@ -59,17 +60,31 @@ function TokensTable() {
 
     useEffect(() => {
         async function updateData() {
-            const tokens: {token: TokenTypes, poolAddress: string}[] = [
+            /*const tokens: {token: TokenTypes, poolAddress: string}[] = [
                 { token: fUSDCx, poolAddress: fDAIxfUSDCxPool },
                 { token: fDAIx, poolAddress: fDAIxfUSDCxPool }
             ];
+            const addresses = getDefaultAddresses();
+            const pools = getDefaultWhitelistedPools();
+            if (!addresses || !pools) { return; }*/
+
+            const addresses = getDefaultAddresses();
+            const pools = getDefaultWhitelistedPools();
+            if (!addresses) { return; }
+
+            const tokens = whitelistedTokens;
+            const fUSDCx = findToken(addresses.fUSDCx);
+            if (!fUSDCx) { return; }
 
             const newData: ExplicitAny[][] = [];
             const newLinks: ExplicitAny[] = [];
             const newFunctions: ExplicitAny[] = [];
             await Promise.all(
                 tokens.map(async (t) => {
-                    const poolContract = getPoolContract(t.poolAddress);
+                    if (!cfa) { return; }
+                    if (!t.refUSDCxPoolAddress || t.refUSDCxPoolAddress === '') { return; }
+
+                    const poolContract = getPoolContract(t.refUSDCxPoolAddress);
 
                     if (!poolContract) { return }
 
@@ -79,7 +94,7 @@ function TokensTable() {
                         poolContract.read.token0([]), // get each token
                         poolContract.read.token1([])
                     ];
-                    if (address) { readOps.push(cfa.read.getFlow([t.token.address, address, t.poolAddress]))} // if connected wallet, get flowrate
+                    if (address) { readOps.push(cfa.read.getFlow([t.address, address, t.refUSDCxPoolAddress]))} // if connected wallet, get flowrate
                     const [reserves, token0, token1, flowParams] = await Promise.all(readOps); 
 
                     // decode params
@@ -89,7 +104,7 @@ function TokensTable() {
                     // get syncs from subgraph
                     const GET_DATA = gql`
                         {
-                            pool(id: "${t.poolAddress}") {
+                            pool(id: "${t.refUSDCxPoolAddress}") {
                                 syncs(first: 500, orderBy: blockTimestamp, orderDirection: asc) {
                                     blockTimestamp
                                     id
@@ -116,26 +131,26 @@ function TokensTable() {
                     var change: number|undefined = undefined;
                     var tvl: number|undefined = undefined;
                     var dataKey: string|undefined = undefined;
-                    if (t.token.address == token0 && token1 == fUSDCx.address) {
+                    if (t.address == token0 && token1 == fUSDCx.address) {
                         price = decodedReserves.reserve1 / decodedReserves.reserve0;
                         tvl = decodedReserves.reserve1; // intentional: tvl = amnt * price
                         dataKey = 'reserve1';
 
                         const price24h = sync24h.reserve1 / sync24h.reserve0;
                         change = (price - price24h) / price24h * 100;
-                    } else if (t.token.address == token1 && token0 == fUSDCx.address) {
+                    } else if (t.address == token1 && token0 == fUSDCx.address) {
                         price = decodedReserves.reserve0 / decodedReserves.reserve1;
                         tvl = decodedReserves.reserve0;
                         dataKey = 'reserve0';
 
                         const price24h = sync24h.reserve0 / sync24h.reserve1;
                         change = (price - price24h) / price24h * 100;
-                    } else if (t.token.address == fUSDCx.address) {
+                    } else if (t.address == fUSDCx.address) {
                         // special case (temporary):
                         price = 1;
-                        tvl = t.token.address == token0 ? decodedReserves.reserve0 : decodedReserves.reserve1;
+                        tvl = t.address == token0 ? decodedReserves.reserve0 : decodedReserves.reserve1;
                         change = 0;
-                        dataKey = t.token.address == token0 ? 'reserve1' : 'reserve0'; // opposite reserve will show price correctly
+                        dataKey = t.address == token0 ? 'reserve1' : 'reserve0'; // opposite reserve will show price correctly
                     } else {
                         // TODO: get external price
                     }
@@ -157,7 +172,7 @@ function TokensTable() {
                     });
 
                     newData.push([
-                        { token: t.token },
+                        { token: t },
                         { text: price != undefined ? price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '---' }, // TODO: currency localization
                         { change: change },
                         { text: tvl ? tvl.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '---' },
@@ -168,7 +183,7 @@ function TokensTable() {
                     // set outbound token as usd and inbound as the row's token
                     newFunctions.push(() => {
                         store.setOutboundToken(fUSDCx);
-                        store.setInboundToken(t.token);
+                        store.setInboundToken(t);
                     });
                 })
             );

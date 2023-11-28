@@ -3,7 +3,7 @@ import { getPublicClient } from '@wagmi/core'
 import poolABI from "../../utils/poolABI";
 
 const getPoolContract = (poolAddress: string | undefined) => {
-    const publicClient = getPublicClient({ chainId: 80001 }); 
+    const publicClient = getPublicClient(); 
     
     if (!poolAddress) {return}
 

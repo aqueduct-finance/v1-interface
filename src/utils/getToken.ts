@@ -1,7 +1,8 @@
 import { Framework } from "@superfluid-finance/sdk-core";
 import { ethers } from "ethers";
 import { TokenTypes } from "../types/TokenOption";
-import { findToken } from "./tokens";
+import { findToken } from "./whitelistedTokens";
+import getChainId from "../components/helpers/getChainId";
 
 interface GetTokenArgs {
     tokenAddress: string;
@@ -11,12 +12,23 @@ interface GetTokenArgs {
 
 const getToken = async ({
     tokenAddress,
-    provider,
-    chainId,
+    provider
 }: GetTokenArgs): Promise<TokenTypes> => {
     const token = findToken(tokenAddress);
     if (token) {
         return token;
+    }
+
+    const chainId = getChainId();
+    if (!chainId) { 
+        return {
+            name: "undefined",
+            symbol: "undefined",
+            logoURI: "",
+            address: tokenAddress as `0x${string}`,
+            decimals: 18,
+            chainId: chainId,
+        };
     }
 
     // if didn't find listed token, create object for unlisted token
@@ -33,7 +45,7 @@ const getToken = async ({
         logoURI: "",
         address: tokenAddress as `0x${string}`,
         decimals: 18,
-        chainId: 5,
+        chainId: chainId,
     };
 
     // TODO: Do we need error handling here?

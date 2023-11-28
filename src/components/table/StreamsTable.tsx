@@ -4,7 +4,6 @@ import { useAccount, useNetwork } from "wagmi";
 import { useEthersProvider } from "../providers/provider";
 import BalancesField from "./BalancesField";
 import GenericTable from "./GenericTable";
-import { fDAIxfUSDCxPool, fDAIx, fUSDCx } from "../../utils/constants";
 import getToken from "../../utils/getToken";
 import TextField from "./TextField";
 import PoolField from "./PoolField";
@@ -17,6 +16,8 @@ import { decodeGetUserBalancesAtTimeRes } from "../helpers/decodeGetUserBalances
 import formatTokenAmount from "../../utils/parseTokenAmount";
 import LockedBalance from "../../types/LockedBalance";
 import LockedBalancesList from "./LockedBalancesList";
+import { getDefaultAddresses } from "../../utils/constants";
+import { getDefaultWhitelistedPools } from "../../utils/whitelistedPools";
 
 function StreamsTable() {
     const provider = useEthersProvider();
@@ -35,15 +36,14 @@ function StreamsTable() {
     // TODO: subgraph to track current streams so we don't have to manually check here
     useEffect(() => {
         async function updateData() {
-            if (!address || !chain || !provider) {
+            if (!address || !chain || !provider || !cfa) {
                 return;
             }
 
-            const chainId = chain?.id;
-
-            const pools = [
-                { token0: fUSDCx, token1: fDAIx, address: fDAIxfUSDCxPool },
-            ];
+            const chainId = chain.id;
+            const addresses = getDefaultAddresses();
+            const pools = getDefaultWhitelistedPools();
+            if (!addresses || !pools) { return; }
 
             const newData: ExplicitAny[][] = [];
             const newLinks: ExplicitAny[] = [];

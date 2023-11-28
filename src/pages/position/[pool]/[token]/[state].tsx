@@ -264,7 +264,7 @@ const Position: NextPage = () => {
         setIsCollecting(true);
 
         try {
-            const publicClient = getPublicClient({ chainId: 80001 }); 
+            const publicClient = getPublicClient(); 
 
             // get funds
             const hash = await writePoolContract.write.retrieveFunds([token1.address]);
@@ -303,7 +303,7 @@ const Position: NextPage = () => {
         setIsUnwrapping(true);
 
         try {
-            const publicClient = getPublicClient({ chainId: 80001 }); 
+            const publicClient = getPublicClient(); 
 
             // get funds
             const hash = await token1Contract.write.downgrade([returnedAmount]);

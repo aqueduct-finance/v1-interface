@@ -1,6 +1,7 @@
 import { Abi, Address, getContract, GetContractReturnType, PublicClient, WalletClient } from "viem";
 import { getWalletClient } from '@wagmi/core'
 import { useEffect, useState } from "react";
+import getChainId from "./getChainId";
 
 const useWriteableSuperToken = (tokenAddress: string | undefined) => {
     const [contract, setContract] = useState<GetContractReturnType<Abi, PublicClient, WalletClient, Address>>();
@@ -11,9 +12,12 @@ const useWriteableSuperToken = (tokenAddress: string | undefined) => {
 
         const fetchWalletClient = async () => {
             while (!walletClient && isMounted) {
-                const client = (await getWalletClient({ chainId: 80001 })) as WalletClient;
-                if (isMounted) {
-                    setWalletClient(client);
+                const chainId = getChainId();
+                if (chainId) {
+                    const client = (await getWalletClient({ chainId: chainId })) as WalletClient;
+                    if (isMounted) {
+                        setWalletClient(client);
+                    }
                 }
                 await new Promise(resolve => setTimeout(resolve, 100));
             }

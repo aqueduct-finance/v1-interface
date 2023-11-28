@@ -1,11 +1,15 @@
 import { Abi, Address, getContract, GetContractReturnType, PublicClient, WalletClient } from "viem";
 import { getWalletClient } from '@wagmi/core'
 import poolABI from "../../utils/poolABI";
+import getChainId from "./getChainId";
 
 const getWriteablePoolContract = async (poolAddress: string | undefined) => {
     let walletClient
     while (!walletClient) {
-        walletClient = (await getWalletClient({ chainId: 80001 })) as WalletClient; 
+        const chainId = getChainId();
+        if (chainId) {
+            walletClient = (await getWalletClient({ chainId: chainId })) as WalletClient; 
+        }
         await new Promise(resolve => setTimeout(resolve, 100));
     }
 

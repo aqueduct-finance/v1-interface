@@ -2498,10 +2498,10 @@ apollo-utilities@1.3.4, apollo-utilities@^1.3.0, apollo-utilities@^1.3.4:
     ts-invariant "^0.4.0"
     tslib "^1.10.0"
 
-aqueduct-widget@^0.7.29:
-  version "0.7.29"
-  resolved "https://registry.yarnpkg.com/aqueduct-widget/-/aqueduct-widget-0.7.29.tgz#ba566717c11f58167e44f60b7bc1884e18dc99b4"
-  integrity sha512-OdUguhyUxdtdVh/4LXkINc9Z9FV1rh9tcQpuudRCHtLindYCes4K4lA4i2WMS7VyEMCOkEFVrCMl7lEqDHPYiQ==
+aqueduct-widget@^0.7.30:
+  version "0.7.30"
+  resolved "https://registry.yarnpkg.com/aqueduct-widget/-/aqueduct-widget-0.7.30.tgz#f5bad8af6946462a9d2bf27183cce2fb00e393fd"
+  integrity sha512-veyqLAOhGobt7/MBTCoi3nPq/jeAWTinuZ8JeAfBsIW5/zLjQEl/l+Xch0TeDFxJnp0XTZtUuzdEPgembYiY1w==
   dependencies:
     "@headlessui/react" "^1.7.14"
     "@rainbow-me/rainbowkit" "^0.11.0"

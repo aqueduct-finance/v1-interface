@@ -1,6 +1,6 @@
 import { getContract } from "viem";
 import { usePublicClient } from "wagmi";
-import { cfaV1 } from "../../utils/constants";
+import { getDefaultAddresses } from "../../utils/constants";
 
 const useCFA = () => {
     const cfaABI = [{
@@ -48,9 +48,12 @@ const useCFA = () => {
         "type":"function"
     }];
 
-    const publicClient = usePublicClient({ chainId: 80001 });
+    const cfaV1 = getDefaultAddresses()?.cfaV1;
+    if (!cfaV1) { return; }
+
+    const publicClient = usePublicClient();
     const contract = getContract({
-        address: cfaV1,
+        address: cfaV1 as `0x${string}`,
         abi: cfaABI,
         publicClient,
     });

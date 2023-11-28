@@ -130,13 +130,18 @@ const PoolInteractionVisualization: NextPage = () => {
     }, [router.query]);
 
     useEffect(() => {
-        if (token0 && token1) {
-            setPoolAddress(getPoolAddress(token0.address, token1.address));
+        async function updatePool() {
+            if (token0 && token1) {
+                const addr = await getPoolAddress(token0.address, token1.address);
+                setPoolAddress(addr);
+            }
         }
+
+        updatePool();
     }, [token0, token1])
 
     async function updateVars() {
-        if (!userAddress || !provider || !token0 || !token1 || !tokenContract0 || !tokenContract1 || !poolContract || !poolAddress) {
+        if (!userAddress || !provider || !token0 || !token1 || !tokenContract0 || !tokenContract1 || !poolContract || !poolAddress || !cfa) {
             return;
         }
 
