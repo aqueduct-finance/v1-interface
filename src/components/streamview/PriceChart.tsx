@@ -53,11 +53,13 @@ const PriceChart = ({
 
     const GET_DATA = gql`
         {
-            syncs(first: 500, orderBy: blockTimestamp, orderDirection: asc) {
-            id
-            reserve0
-            reserve1
-            blockTimestamp
+            pool(id: "${getPoolAddress(token0?.address ?? '', token1?.address ?? '')}") {
+                syncs(first: 500, orderBy: blockTimestamp, orderDirection: asc) {
+                    blockTimestamp
+                    id
+                    reserve0
+                    reserve1
+                }
             }
         }
     `;
@@ -141,7 +143,7 @@ const PriceChart = ({
                 let currentIndex = -1;
                 const newConvertedData: PriceHistory[] = [];
 
-                data.syncs.forEach((item: {
+                data.pool.syncs.forEach((item: {
                     blockTimestamp: any;
                     reserve0: { toString: () => string };
                     reserve1: { toString: () => string };

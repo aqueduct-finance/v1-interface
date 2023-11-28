@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 
   const client = new ApolloClient({
-    uri: 'https://api.studio.thegraph.com/query/49133/aqueductsubgraph/version/latest',
+    uri: process.env.NEXT_PUBLIC_SUBGRAPH_URI,
     cache: new InMemoryCache(),
   });
 
