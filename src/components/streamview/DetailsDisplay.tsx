@@ -1,5 +1,5 @@
 import { ethers, BigNumber } from 'ethers';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { TokenTypes } from '../../types/TokenOption';
 import DetailRow from './DetailRow';
 import { useAccount } from 'wagmi';
@@ -13,6 +13,12 @@ interface DetailsDisplayProps {
     token0: TokenTypes;
 }
 
+interface StreamData {
+    title: string;
+    data: string;
+    link?: string;
+}
+
 const DetailsDisplay = ({
     startDate,
     endDate,
@@ -22,17 +28,23 @@ const DetailsDisplay = ({
 }: DetailsDisplayProps) => {
     const { address } = useAccount();
 
-    const poolAddress = getPoolAddress(token0?.address, token1?.address);
+    const [streamData, setStreamData] = useState<StreamData[]>();
+    useEffect(() => {
+        async function getStreamData() {
+            const poolAddress = await getPoolAddress(token0?.address, token1?.address);
+            const superfluidDashboardLink = `https://app.superfluid.finance/stream/polygon-mumbai/${address}-${poolAddress ?? ''}-${token0?.address}`
 
-    const superfluidDashboardLink = `https://app.superfluid.finance/stream/polygon-mumbai/${address}-${poolAddress}-${token0?.address}`
+            const data = [
+                { title: "Start Date: ", data: startDate?.toLocaleDateString() + "\u00A0\u00A0\u00A0" + startDate?.toLocaleTimeString() },
+                { title: "End Date: ", data: "Not Scheduled" },
+                { title: `${token0?.symbol} Flowrate: `, data: "-" + parseFloat(ethers.utils.formatEther(flowrate0)).toFixed(11) + "\u00A0" + " / " + "\u00A0" + "sec" },
+                { title: "Data: ", data: `${superfluidDashboardLink.slice(8, 12)}...${superfluidDashboardLink.slice(-4)}`, link: superfluidDashboardLink },
+            ]
+            setStreamData(data);
+        }
 
-    const actualEndDate = endDate === undefined ? "Not Scheduled" : startDate?.toLocaleDateString() + "\u00A0\u00A0\u00A0" + startDate?.toLocaleTimeString();
-    const streamData = [
-        { title: "Start Date: ", data: startDate?.toLocaleDateString() + "\u00A0\u00A0\u00A0" + startDate?.toLocaleTimeString() },
-        { title: "End Date: ", data: "Not Scheduled" },
-        { title: `${token0?.symbol} Flowrate: `, data: "-" + parseFloat(ethers.utils.formatEther(flowrate0)).toFixed(11) + "\u00A0" + " / " + "\u00A0" + "sec" },
-        { title: "Data: ", data: `${superfluidDashboardLink.slice(8, 12)}...${superfluidDashboardLink.slice(-4)}`, link: superfluidDashboardLink },
-    ]
+        getStreamData();
+    }, [])
 
     return (
         <div className='max-w-xl w-full h-full rounded-2xl md:rounded-bl-[2.4rem] bg-white/5 text-white flex flex-col items-start justify-start px-8 py-6'>
@@ -40,15 +52,17 @@ const DetailsDisplay = ({
                 Details
             </h1>
             <div className='space-y-3 mt-4'>
-                {streamData.map((data, i) => (
-                    <DetailRow
-                        title={data.title}
-                        data={data.data}
-                        link={data.link}
-                        index={i}
-                        key={i}
-                    />
-                ))}
+                {
+                    streamData && streamData.map((data, i) => (
+                        <DetailRow
+                            title={data.title}
+                            data={data.data}
+                            link={data.link}
+                            index={i}
+                            key={i}
+                        />
+                    ))
+                }
             </div>
         </div>
     )

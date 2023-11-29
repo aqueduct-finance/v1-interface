@@ -18,6 +18,7 @@ import LockedBalance from "../../types/LockedBalance";
 import LockedBalancesList from "./LockedBalancesList";
 import { getDefaultAddresses } from "../../utils/constants";
 import { getDefaultWhitelistedPools } from "../../utils/whitelistedPools";
+import { useStore } from "../../store";
 
 function StreamsTable() {
     const provider = useEthersProvider();
@@ -28,6 +29,8 @@ function StreamsTable() {
     const [data, setData] = useState<ExplicitAny[][]>();
     const [links, setLinks] = useState<string[]>();
 
+    const store = useStore();
+
     const [isLoading, setIsLoading] = useState(true);
 
     const [lockedBalances, setLockedBalances] = useState<LockedBalance[]>([]);
@@ -36,6 +39,11 @@ function StreamsTable() {
     // TODO: subgraph to track current streams so we don't have to manually check here
     useEffect(() => {
         async function updateData() {
+            setIsLoading(true);
+            setData(undefined);
+            setLinks(undefined);
+            setLockedBalances([]);
+
             if (!address || !chain || !provider || !cfa) {
                 return;
             }
@@ -130,7 +138,7 @@ function StreamsTable() {
         }
 
         updateData();
-    }, [address, chain, provider]);
+    }, [address, provider, store.chain]);
 
     return (
         <section className="flex flex-col items-center w-full pb-64">

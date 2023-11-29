@@ -49,9 +49,9 @@ const useCFA = () => {
     }];
 
     const cfaV1 = getDefaultAddresses()?.cfaV1;
-    if (!cfaV1) { return; }
-
     const publicClient = usePublicClient();
+
+    if (!cfaV1) { return; }
     const contract = getContract({
         address: cfaV1 as `0x${string}`,
         abi: cfaABI,

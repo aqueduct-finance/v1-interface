@@ -2,6 +2,7 @@ import React from "react";
 import { ConnectKitButton } from "connectkit";
 import NavOption from "./NavOption";
 import theme from "../styles/theme";
+import ChainDropdownButton from "./ChainDropdown";
 
 const navItems: { label: string; page: string }[] = [
     {
@@ -24,7 +25,7 @@ function NavBar() {
         <>
             <div className="w-full flex justify-center sticky top-0 z-40 backdrop-blur-xl bg-black/20">
                 <div
-                    className='max-w-screen-2xl flex w-full items-center justify-between px-4 py-2 md:px-6 md:pt-4 md:pb-2 lg:px-8 lg:pt-6 lg:pb-4 overflow-hidden'
+                    className='max-w-screen-2xl flex w-full items-center justify-between pl-4 pr-2 py-2 md:px-6 md:pt-4 md:pb-2 lg:px-8 lg:pt-6 lg:pb-4'
                 >
                     
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -34,7 +35,7 @@ function NavBar() {
                             className="w-8 h-8 object-contain lg:w-9 lg:h-9 rounded-lg lg:rounded-xl"
                         />
                         <h1
-                            className="text-3xl px-2 lg:px-2 garamond-font text-white tracking-tight"
+                            className="text-3xl px-2 lg:px-2 garamond-font text-white tracking-tight hidden lg:flex"
                         >
                             Aqueduct
                         </h1>
@@ -50,7 +51,10 @@ function NavBar() {
                             ))}
                         </div>
                         <div className="w-full" />
-                        <ConnectKitButton />
+                        <div className="flex items-center justify-center space-x-3">
+                            <ChainDropdownButton />
+                            <ConnectKitButton />
+                        </div>
                 </div>
             </div>
 

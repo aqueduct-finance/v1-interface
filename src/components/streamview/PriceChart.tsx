@@ -8,6 +8,7 @@ import getPoolContract from "../helpers/getPoolContract";
 import getPoolAddress from "../helpers/getPool";
 import { ethers } from "ethers";
 import { decodeGetReservesAtTimeRes } from "../helpers/decodeGetReservesAtTimeRes";
+import { useStore } from "../../store";
 
 interface PriceHistoryProps {
     token0?: TokenTypes;
@@ -52,6 +53,8 @@ const PriceChart = ({
     const totalPeriod = new Date(currentDate.getFullYear() - 1, currentDate.getMonth()).getTime();
 
     const apolloClient = useApolloClient();
+
+    const store = useStore();
 
     const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
     const minDifferenceRef = useRef(Infinity);
@@ -98,10 +101,12 @@ const PriceChart = ({
         }
 
         async function formatData() {
+            setLoading(true);
+
             if (!token0 || !token1) { return }
 
             const poolAddress = await getPoolAddress(token0.address, token1.address);
-            if (!poolAddress) { return; }
+            if (!poolAddress || poolAddress === '0x0000000000000000000000000000000000000000') { return; }
             const GET_DATA = gql`
                 {
                     pool(id: "${poolAddress.toLowerCase()}") {
@@ -145,7 +150,6 @@ const PriceChart = ({
             const [poolToken0] = await Promise.all(readOps);
 
             try {
-                setLoading(true);
                 let currentIndex = -1;
                 const newConvertedData: PriceHistory[] = [];
 
@@ -236,7 +240,7 @@ const PriceChart = ({
 
         formatData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token0, token1, startDate, periodSelect.current]);
+    }, [token0, token1, startDate, periodSelect.current, store.chain]);
 
     const type = "monotone";
 

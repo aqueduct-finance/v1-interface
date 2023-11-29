@@ -23,14 +23,16 @@ import WidgetContainer from "../widgets/WidgetContainer";
 import getPoolAddress from "../helpers/getPool";
 import { getDefaultWhitelistedPools } from "../../utils/whitelistedPools";
 import { getDefaultAddresses } from "../../utils/constants";
+import { useStore } from "../../store";
 
 function TokensTable() {
     const provider = useEthersProvider();
-    const { chain } = useNetwork();
     const { address } = useAccount();
     const cfa = useCFA();
 
     const store = useWidgetStore();
+
+    const localStore = useStore();
 
     const [tableData, setTableData] = useState<ExplicitAny[][]>();
     const [links, setLinks] = useState<string[]>();
@@ -67,6 +69,11 @@ function TokensTable() {
             const addresses = getDefaultAddresses();
             const pools = getDefaultWhitelistedPools();
             if (!addresses || !pools) { return; }*/
+
+            setIsLoading(true);
+            setTableData(undefined);
+            setLinks(undefined);
+            setFunctions([]);
 
             const addresses = getDefaultAddresses();
             const pools = getDefaultWhitelistedPools();
@@ -195,7 +202,7 @@ function TokensTable() {
         }
 
         updateData();
-    }, [address, chain, provider]);
+    }, [address, provider, localStore.chain]);
 
     return (
         <section className="flex flex-col items-center w-full pb-64">
