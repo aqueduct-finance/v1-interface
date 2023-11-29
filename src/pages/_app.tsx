@@ -10,7 +10,7 @@ const chains = [polygonMumbai, polygon]
 
 function MyApp({ Component, pageProps }: AppProps) {
 
-  const walletConnectProjectId = process.env.WALLETCONNECT_PROJECT_ID || '';
+  const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '';
 
   const config = createConfig(
     getDefaultConfig({
