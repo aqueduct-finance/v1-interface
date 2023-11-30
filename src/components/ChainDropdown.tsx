@@ -27,20 +27,15 @@ const ChainDropdownButton = () => {
     return (
         <div className="md:relative">
             <button 
-                className="flex w-[4.5rem] h-10 rounded-xl items-center justify-center space-x-2 bg-[#272727] hover:bg-[#404040] transition-all duration-150"
+                className="flex 2w-[4.5rem] pl-2 pr-3 h-10 rounded-xl items-center justify-center space-x-3 bg-[#272727] hover:bg-[#404040] transition-all duration-150"
                 onClick={() => {
                     setOpen(!open);
                 }}
                 ref={ref}
             >
-                <Image 
-                    src={store.chain.logo} 
-                    alt={store.chain.name}
-                    width='20'
-                    height='20'
-                />
+                {store.chain.logo}
                 <IoChevronDown 
-                className="flex-shrink-0"
+                    className="flex-shrink-0"
                     size={15}
                 />
             </button>
@@ -119,14 +114,7 @@ const ChainDropdown = ({open, setOpen, parentRef}: ChainDropdown) => {
                                 }}
                             >
                                 <div className="flex space-x-4">
-                                    <div className="flex items-center justify-center">
-                                        <Image 
-                                            src={c.logo} 
-                                            alt={c.name}
-                                            width='18'
-                                            height='18'
-                                        />
-                                    </div>
+                                    {c.logo}
                                     <p className="">
                                         {c.name}
                                     </p>

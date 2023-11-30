@@ -1,7 +1,11 @@
+import { ReactNode } from "react";
+import { Polygon } from "./chainLogos";
+
 export interface Chain {
     chainId: number;
     name: string;
-    logo: string;
+    //logo: string;
+    logo: ReactNode;
 }
 
 interface Chains {
@@ -12,12 +16,12 @@ export const chainsList: Chain[] = [
     {
         chainId: 80001,
         name: 'Mumbai Testnet',
-        logo: '/mumbai-logo.png'
+        logo: <Polygon testnet />
     },
     {
         chainId: 137,
         name: 'Polygon Mainnet',
-        logo: '/polygon-logo.png'
+        logo: <Polygon />
     }
 ];
 
